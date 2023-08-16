@@ -66,10 +66,12 @@ body {
   position: relative;
   list-style: none;
   cursor: pointer;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 0.2rem max-content;
+  grid-template-rows: max-content max-content;
 }
 .hierarchy .folder .folder-title {
+  grid-column: 1/-1;
   order: 0;
   width: 100%;
   display: flex;
@@ -92,7 +94,6 @@ body {
   order: 1;
   content: "";
   width: 10px;
-  align-self: stretch;
   border-right: 2px solid black;
 }
 
