@@ -3,7 +3,7 @@ import {model} from "./model.js";
 import {view} from "./view.js";
 
 
-const myStack = model.defaultBook.makeBook("First Book(Law)");
+const myStack = model.defaultBook.makeBook("First Book");
 const myBook = model.defaultBook.makeBook("My Book");
 myBook.makeNote("How to make a bomb", `- First take powder
 - Spread that shit on your face
@@ -13,9 +13,9 @@ myBook.makeNote("How to make a bomb", `- First take powder
 let note = myStack.makeBook("Book1").makeNote("Error Note", "OG");
 let todo = myBook.makeTodo("Muscu Time", "Schedule");
 
-view.createBook(myStack, ".memobooks .list");
+view.loadAllBooks(model.defaultBook);
 
-console.log("ID : " + model.defaultBook.id);
+console.log("ID : " + myStack.id);
 
 
 

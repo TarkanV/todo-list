@@ -8,7 +8,7 @@
     "build": "webpack",
     "watch": "webpack --watch",
     "start": "webpack serve --open",
-    "debug": "node -i -e \"const d = require('./src/index.js')\""
+    "push-live": "git subtree push --prefix dist origin gh-pages"
     
   },
   "repository": {

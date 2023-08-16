@@ -6,24 +6,47 @@ const view = (function(){
 
         });
     };
-    const createBook = function(book, parentSelector){
-        const parentNode = document.querySelector(parentSelector);
+    const createBook = function(book, parentNode){
+        //const parentNode = document.querySelector(parentSelector);
+        const parentNodeList = parentNode.querySelector(".list"); 
         const bookNode = templateBook.content.cloneNode(true).firstElementChild;
         console.log(bookNode); 
-        parentNode.appendChild(bookNode);
+        parentNodeList.appendChild(bookNode);
         
         bookNode.querySelector(".folder-title span").textContent = book.name;
+        bookNode.setAttribute("data-id", book.id);
+    
         
          
         return bookNode;
     }
-    const setBookCollaspe = function(book){
+    const setBookCollaspe = function(bookNode){
         
-        book.addEventListener("click", (e)=>{
+        bookNode.addEventListener("click", (e)=>{
             e.stopPropagation();
-            book.classList.toggle("collasped");
+            bookNode.classList.toggle("collasped");
         });     
     };
+
+    
+    const loadBookContent = function(book, bookNodeParent){
+        if(book.children.length > 0){
+            book.children.forEach((child) => {
+                if(child.getType() == "book"){
+                    const bookNode = createBook(child, bookNodeParent);
+                    setBookCollaspe(bookNode);
+                    loadBookContent(child, bookNode);
+                }
+            });   
+        }
+    }
+    const loadAllBooks = function(defaultBook){
+        loadBookContent(defaultBook, defaultBookNode);
+    }
+
+    const initBooksCollaspe = (function(){
+        document.querySelectorAll(".folder").forEach((book) => setBookCollaspe(book));
+    })();
 
     const showHierarchy = function(holder, depth = 0){
         console.log("- ".repeat(depth) + holder.name);
@@ -34,12 +57,9 @@ const view = (function(){
         }    
     }
 
-    const initBooksCollaspe = (function(){
-        document.querySelectorAll(".folder").forEach((book) => setBookCollaspe(book));
-    })();
-
     return {
         showHierarchy,
+        loadAllBooks,
         createBook,
     }
     
