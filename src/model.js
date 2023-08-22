@@ -36,12 +36,13 @@ const model = (function(){
 */
     let refBookID = -1;
     let refNoteID = -1;
+    let bookList = [];
     const makeBook = function(name){
         let children = []; 
         const book = {
             name,
-            children,
             id: ++refBookID, 
+            children, 
             ...fileOperator,
             makeBook,
             makeNote,
@@ -49,8 +50,18 @@ const model = (function(){
             getType : ()  => "book",
         }
         this.add(book);
+        bookList.push(book);
         return book;
     }
+
+    const defaultBook = {
+        name : "Memobooks",
+        id: ++refBookID, 
+        children : [],
+        ...fileOperator,
+        makeBook,        
+        getType : ()  => "book",
+    };
 
     const noteMix = function(name, content){
         const creationDate = new Date();
@@ -148,17 +159,11 @@ const model = (function(){
     
     // end
 
-    const defaultBook = {
-        name : "Memobooks",
-        id: ++refBookID, 
-        children : [],
-        ...fileOperator,
-        makeBook,        
-        getType : ()  => "book",
-    };
+    
     
     return{
         defaultBook,
+        bookList,
     }
     
 })();

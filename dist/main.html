@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css" />
     <title>Todo App</title>
   </head>
+
   <body>
     <div class="container">
       <div class="top">
@@ -19,56 +20,99 @@
           <img class="ph-img" src="img/placeholder.png" />
         </div>
       </div>
-      <div class="hierarchy">
-        <ul>
-          <li class="all-memos main-folder folder">
-            <p class="folder-title">
-              <img class="ph-img" src="img/placeholder.png" /> <span>All Memos</span>
-            </p>
-            <ul class="list">
-              <li class="all-notes folder">
-                <p class="folder-title">
-                  <img class="ph-img" src="img/placeholder.png" /> <span>Notes</span>
-                </p>
-                <ul class="list">
-                    <li class="folder">
-                        <p class="folder-title">
-                            <img class="ph-img" src="img/placeholder.png" /> <span>Temp0</span>
-                        </p> 
-                        <ul class="list">
-                             
-                        </ul>  
-                    </li>
-                    
-                </ul>
-              </li>
-              <li class="all-todo folder">
-                <p class="folder-title">
-                  <img class="ph-img" src="img/placeholder.png" />Todo
-                </p>
-              </li>
-            </ul>
-          </li>
-          <li class="memobooks main-folder folder" data-id="0">
-            <p class="folder-title">
-              <img class="ph-img" src="img/placeholder.png" /> <span>Memobooks</span>
-            </p>
-            <ul class="list">
-              <template id="template-folder">
-                <li class="folder">
-                    <p class="folder-title">
-                        <img class="ph-img" src="img/placeholder.png" /> <span></span>
-                    </p>
-                    <ul class="list"></ul>   
+      
+      <div class="middle">
+        <div class="hierarchy">
+          <ul>
+            <li class="all-memos main-folder folder">
+              <p class="folder-title">
+                <span class="expand-icon"><img src="img/expand_down.svg"></span>
+                <img class="ph-img" src="img/placeholder.png" />
+                <span class="folder-title-text">All Memos</span>
+              </p>
+              <ul class="list">
+                <li class="all-notes folder">
+                  <p class="folder-title">
+                    <span class="expand-icon"><img src="img/expand_down.svg"></span>
+                    <img class="ph-img" src="img/placeholder.png" />
+                    <span class="folder-title-text">Notes</span>
+                  </p>
+                  <ul class="list">
+                  </ul>
                 </li>
+                <li class="all-todo folder">
+                  <p class="folder-title">
+                    <span class="expand-icon"><img src="img/expand_down.svg"></span>
+                    <img class="ph-img" src="img/placeholder.png" />Todo
+                  </p>
+                </li>
+              </ul>
+            </li>
+            <li class="memobooks main-folder folder" data-id="0">
+              <p class="folder-title">
+                <span class="expand-icon"><img src="img/expand_down.svg"></span>
+                <img class="ph-img" src="img/placeholder.png" />
+                <span clas="folder-title-text">Memobooks</span>
+              </p>
+              <ul class="list">
+                <template id="template-folder">
+                  <li class="folder">
+                    <p class="folder-title">
+                      <span class="expand-icon"><img src="img/expand_down.svg"></span>
+                      <img class="ph-img" src="img/placeholder.png" />
+                      <span class="folder-title-text"></span>
+                    </p>
+                    <ul class="list"></ul>
+                  </li>
+                </template>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="opened-book">
+              <div class="opened-book-title">           
+                <img class="ph-img" src="img/placeholder.png" /> 
+                <h2>Note List</h2>
+              </div>
+              <ul class="note-list">
+
+              </ul>
+
+              <template id="template-note">
+                <li class="note" tabindex="0">
+                  <div class="note-details">
+                    <div class="note-details-text">
+                      <h3 class="note-name">Gender equal bathrooms</h3>
+                      <div class="note-content">Made the boys room gender inclusive and removed urinals but without adding more stalls.</div>
+                    </div>
+                    <div class="note-date">Today</div>
+                  </div>
+                  <div class="note-icon"><div>
+                  </div>
+                </li>   
               </template>
-            </ul>
-            
-          </li>
-        </ul>
+
+              <template id="template-todo">
+                <li class="note todo" tabindex="0">
+                  <div class="note-details">
+                    <div class="note-details-text">
+                      <div class="todo-top">
+                        <input type="checkbox" class="task-status">
+                        <h3 class="note-name">Gender equal bathrooms</h3>
+                      </div>
+                      <div class="note-content">Made the boys room gender inclusive and removed urinals but without adding more stalls.</div>
+                    </div>
+                    <div class="note-date">Today</div>
+                  </div>
+                  <div class="note-icon"><div>
+                  </div>
+                </li>   
+              </template>
+        
+        
+        </div>
+        <div class="note-editor"></div>
+            </div>
       </div>
-      <div class="note-list"></div>
-      <div class="note-editor"></div>
-    </div>
   </body>
 </html>

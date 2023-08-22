@@ -5,21 +5,23 @@
 body{
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
+    background-color : lightcyan;
 }
 .container{
-    display : grid;
-    grid-template-columns: 1fr 1fr min-content;
-    grid-template-rows: min-content 1fr;
+    
+    
     height: 100vh;
     
     
 }
 .top{
     padding : 0.3rem 1rem;
-    background-color:azure;
+    background-color: hsl(206, 30%, 74%);
+    box-shadow: 0 2px 4px gray;
     grid-column: 1/-1;
     display: flex;
     align-items: center;
+
     
     .logo{
         max-width : 40px;
@@ -56,12 +58,18 @@ body{
     }
 
 }
+.middle{
+    display: flex;
 
-.hierarchy, .note-list, .note-editor{
+  
+}
+.hierarchy, .opened-book, .note-editor{
     border : 1px solid lightgray;
+    flex: 1;
+    height : 100vh;
 }
 .hierarchy{
-   
+    
     padding-left: 1rem;
     padding-top : 1rem;
     font-size : 1.2rem;
@@ -90,9 +98,10 @@ body{
             width: 100%;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            
             margin : 0.5rem 0;
-            img{
+            .ph-img{
+                margin-right : 10px;
                 width : 25px;
                 height: 25px;
             }
@@ -101,16 +110,15 @@ body{
         }
         .list{
             margin-top : 0;
-            order : 2;  
-        
-            
+            order : 2;         
         }
         &.collasped > .list{
             display: none;
         }
+        
+        
 
         &::before{
-            
             order : 1;
             content : "";
             width: 10px;
@@ -123,11 +131,101 @@ body{
 
 }
 
-.note-list{
+.expand-icon{
+    img{
+        width: 26px;
     
+    }
+}
+.folder.collasped .expand-icon > img{
+    content: url("./img/expand_up.svg");
+}
+
+.folder:not(:has(.folder-title + ul > li)) .expand-icon{
+    width: 26px;
+    height: 26px;
+    
+    
+    img{
+        display: none;
+    }
+
+} 
+
+.opened-book{
+    padding: 0.1rem;
+    overflow-y: scroll;
+    .opened-book-title{
+        display: flex;
+        align-items: center;
+        gap: 1rem;     
+       
+    }
+    .note-list{
+        padding : 0;
+    
+    }
+    .note{
+        cursor: pointer;
+        background-color: hsl(120, 10%, 90%);
+        border : 1px solid hsl(60, 10%, 60%);
+        box-shadow: 0 2px 4px gray;
+        border-radius: 5px;
+    
+        display : flex;
+        justify-content: space-between;
+        margin : 0;
+        list-style: none;
+        padding: 0.5rem;
+        margin: 0.6rem 0.2rem;
+        height : 95px;
+        position: relative;
+        
+        .note-details-text{
+            overflow: hidden;
+            max-height: 5rem;
+        }
+
+        h3{
+            margin: 0;
+            
+        }
+        .note-content{
+           
+           
+            
+        }
+
+        .note-icon{
+           /*background-color: lightpink; width: 95px; height: 95px;*/
+        }
+
+        @media (max-width: 800px) {
+            .note-icon{
+                display: none;
+                
+            }
+        }
+
+        .note-date{
+            position: absolute;
+            bottom : 0.2rem;
+        }  
+    }
+    .note:focus{
+        outline : 2px solid hsl(56, 18%, 68%);
+    }
+}
+
+.todo{
+    .task-status{
+        content: url("./img/task-status.svg");
+    }
+    .todo-top{
+        display: flex;
+    }
 }
 
 .note-editor{
-  display: none;
-  width: 0;
+    
 }
