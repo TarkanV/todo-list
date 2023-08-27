@@ -33,6 +33,10 @@ myBook.makeNote("Sands of Serendipity", "In the desert's embrace, a lost city re
 
 
 const controller = (function(){
+    const loadDefaultBook = function(book){
+        model.openedBook = book;
+        view.loadBookNotes(model.openedBook);
+    }
     const loadAllBooks = function(){
         view.loadBookHierarchy(model.defaultBook);
     }
@@ -40,14 +44,15 @@ const controller = (function(){
     const handleBookEvents = function(){
         view.setBookCollapsing();
         view.setOpenedBook(model.getOpenedBookFromID);
-        console.log(myBook);
+        
     }
     return{
         loadAllBooks,
-        handleBookEvents,   
+        handleBookEvents, 
+        loadDefaultBook,  
     }
 })();
 
 controller.loadAllBooks();
 controller.handleBookEvents();
-
+controller.loadDefaultBook(myBook);

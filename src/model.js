@@ -63,6 +63,24 @@ const model = (function(){
         makeBook,        
         getType : ()  => "book",
     };
+    const defaultNotes = {
+        name : "Notes",
+        id:"N",
+        children : [],
+        ...fileOperator,
+        getType : () => "book",
+    }
+    
+    const defaultTodos = {
+        name : "Todo",
+        id:"T",
+        children : [],
+        ...fileOperator,
+        getType : () => "book",
+    }
+
+    bookList.push(defaultNotes, defaultTodos);
+
     let openedBook = defaultBook;
     const getOpenedBookFromID = function(clickedBookID){
         openedBook = bookList.find(book => clickedBookID == book.id);
@@ -92,6 +110,7 @@ const model = (function(){
             getType : () => "note",
         }
         this.add(note);
+        defaultNotes.children.push(note);
         return note;
     }
 
@@ -160,6 +179,7 @@ const model = (function(){
         };
 
         this.add(todo);
+        defaultTodos.children.push(todo);
         return todo;
         
     } 

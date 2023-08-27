@@ -73,10 +73,9 @@ const view = (function(){
         //const bookNodeID = clickedBookNode.dataset.id;
        
         
-        if(clickedBookNode.childNodes.length){
-            
-            while(noteListNode.firstElementChild) noteListNode.removeChild(noteListNode.firstElementChild);
-        }  
+        
+        while(noteListNode.firstElementChild) noteListNode.removeChild(noteListNode.firstElementChild);
+        
         openedBookNode.querySelector(".opened-book-title > h2").textContent = clickedBook.name;
         
         clickedBook.children.forEach((child) => {
@@ -88,16 +87,15 @@ const view = (function(){
             
         });  
     }
-    
+    const catchClickedBook = function(handle){
+        
+    }
     const setOpenedBook = function(handle){
         hierarchyNode.addEventListener("click", (e) => {
             
                 if(e.target.closest(".folder:not(.main-folder)") && !e.target.closest(".expand-icon")){
                     
                         clickedBookNode = e.target.closest(".folder");
-                        console.log("this");
-                        console.log("Target : " + e.target);
-                        
                         const clickedBookID = clickedBookNode.dataset.id;
                         const clickedBook = handle(clickedBookID);
                     
@@ -127,6 +125,7 @@ const view = (function(){
         createBook,
         loadBookHierarchy,
         setOpenedBook,
+        loadBookNotes,
         setBookCollapsing,
         
         
