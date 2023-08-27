@@ -98,6 +98,10 @@ body{
             width: 100%;
             display: flex;
             align-items: center;
+            .folder-click{
+                display: contents;
+                
+            }
             
             margin : 0.5rem 0;
             .ph-img{
@@ -112,7 +116,7 @@ body{
             margin-top : 0;
             order : 2;         
         }
-        &.collasped > .list{
+        &.collapsed > .list{
             display: none;
         }
         
@@ -137,7 +141,7 @@ body{
     
     }
 }
-.folder.collasped .expand-icon > img{
+.folder.collapsed .expand-icon > img{
     content: url("./img/expand_up.svg");
 }
 
@@ -219,7 +223,17 @@ body{
 
 .todo{
     .task-status{
-        content: url("./img/task-status.svg");
+        position: relative;
+        display: none;
+        content: "";
+        & + label{
+            position: absolute;
+            cursor: pointer;
+            content: url("./img/task-status.svg");
+        }
+        &:checked + label{
+    
+        }
     }
     .todo-top{
         display: flex;

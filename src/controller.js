@@ -2,7 +2,7 @@
 import {model} from "./model.js";
 import {view} from "./view.js";
 
-
+//Test Books
 const myStack = model.defaultBook.makeBook("First Book");
 const myBook = model.defaultBook.makeBook("Book 2");
 myBook.makeNote("How to make a bomb", `- First take powder
@@ -29,18 +29,25 @@ myBook.makeNote("Songbird's Lament", "The music that awakens magic and changes d
 myBook.makeNote("Sands of Serendipity", "In the desert's embrace, a lost city reveals its secrets.");
 //
 
-view.loadAllBooks(model.defaultBook, model.bookList);
 
-console.log("ID : " + myStack.id);
-
-
-
-
-console.log("Hierarchy : ");
-view.showHierarchy(model.defaultBook);
 
 
 const controller = (function(){
-    
+    const loadAllBooks = function(){
+        view.loadBookHierarchy(model.defaultBook);
+    }
+
+    const handleBookEvents = function(){
+        view.setBookCollapsing();
+        view.setOpenedBook(model.getOpenedBookFromID);
+        console.log(myBook);
+    }
+    return{
+        loadAllBooks,
+        handleBookEvents,   
+    }
 })();
+
+controller.loadAllBooks();
+controller.handleBookEvents();
 

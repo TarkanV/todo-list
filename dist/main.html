@@ -34,8 +34,10 @@
                 <li class="all-notes folder">
                   <p class="folder-title">
                     <span class="expand-icon"><img src="img/expand_down.svg"></span>
-                    <img class="ph-img" src="img/placeholder.png" />
-                    <span class="folder-title-text">Notes</span>
+                    <span class="folder-click">
+                      <img class="ph-img" src="img/placeholder.png" />
+                      <span class="folder-title-text">Notes</span>
+                    </span>
                   </p>
                   <ul class="list">
                   </ul>
@@ -59,8 +61,10 @@
                   <li class="folder">
                     <p class="folder-title">
                       <span class="expand-icon"><img src="img/expand_down.svg"></span>
-                      <img class="ph-img" src="img/placeholder.png" />
-                      <span class="folder-title-text"></span>
+                      <span class="folder-click">
+                        <img class="ph-img" src="img/placeholder.png" />
+                        <span class="folder-title-text"></span>
+                      </span>
                     </p>
                     <ul class="list"></ul>
                   </li>
@@ -97,7 +101,8 @@
                   <div class="note-details">
                     <div class="note-details-text">
                       <div class="todo-top">
-                        <input type="checkbox" class="task-status">
+                        <input type="checkbox" id="task-status" class="task-status" />
+                        <label for="task-status" ></label>
                         <h3 class="note-name">Gender equal bathrooms</h3>
                       </div>
                       <div class="note-content">Made the boys room gender inclusive and removed urinals but without adding more stalls.</div>

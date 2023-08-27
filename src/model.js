@@ -39,6 +39,7 @@ const model = (function(){
     let bookList = [];
     const makeBook = function(name){
         let children = []; 
+        
         const book = {
             name,
             id: ++refBookID, 
@@ -61,6 +62,12 @@ const model = (function(){
         ...fileOperator,
         makeBook,        
         getType : ()  => "book",
+    };
+    let openedBook = defaultBook;
+    const getOpenedBookFromID = function(clickedBookID){
+        openedBook = bookList.find(book => clickedBookID == book.id);
+        
+        return openedBook;
     };
 
     const noteMix = function(name, content){
@@ -164,6 +171,8 @@ const model = (function(){
     return{
         defaultBook,
         bookList,
+        openedBook,
+        getOpenedBookFromID,
     }
     
 })();
