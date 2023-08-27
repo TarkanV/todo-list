@@ -83,6 +83,9 @@ body {
   align-items: center;
   margin: 0.5rem 0;
 }
+.hierarchy .folder .folder-title .folder-click {
+  display: contents;
+}
 .hierarchy .folder .folder-title .ph-img, .hierarchy .folder .folder-title .top .dropdown-menu, .top .hierarchy .folder .folder-title .dropdown-menu, .hierarchy .folder .folder-title .top .profile-pic, .top .hierarchy .folder .folder-title .profile-pic {
   margin-right: 10px;
   width: 25px;
@@ -92,7 +95,7 @@ body {
   margin-top: 0;
   order: 2;
 }
-.hierarchy .folder.collasped > .list {
+.hierarchy .folder.collapsed > .list {
   display: none;
 }
 .hierarchy .folder::before {
@@ -106,7 +109,7 @@ body {
   width: 26px;
 }
 
-.folder.collasped .expand-icon > img {
+.folder.collapsed .expand-icon > img {
   content: url("./img/expand_up.svg");
 }
 
@@ -169,6 +172,13 @@ body {
 }
 
 .todo .task-status {
+  position: relative;
+  display: none;
+  content: "";
+}
+.todo .task-status + label {
+  position: absolute;
+  cursor: pointer;
   content: url("./img/task-status.svg");
 }
 .todo .todo-top {
