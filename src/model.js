@@ -1,3 +1,5 @@
+let fns = require("date-fns");
+
 const model = (function(){ 
 
     const fileOperator = {
@@ -79,11 +81,14 @@ const model = (function(){
         getType : () => "book",
     }
 
-    bookList.push(defaultNotes, defaultTodos);
+    bookList.push(defaultBook, defaultNotes, defaultTodos);
 
     let openedBook = defaultBook;
+    const getBookFromID = function(bookID){
+        return bookList.find(book => bookID == book.id);  
+    }
     const getOpenedBookFromID = function(clickedBookID){
-        openedBook = bookList.find(book => clickedBookID == book.id);
+        openedBook = getBookFromID(clickedBookID);
         
         return openedBook;
     };
@@ -114,7 +119,7 @@ const model = (function(){
         return note;
     }
 
-    const makeTodo = function(name, content = "", dueDate = new Date(), status = "Ongoing"){
+    const makeTodo = function(name, content = "", dueDate, status = "Ongoing"){
         const tasks = [];
         const addTask = function(content){
             tasks.push({
@@ -127,15 +132,17 @@ const model = (function(){
             tasks.splice(tasks.indexOf(content), 1);
         } 
 
-        const updateStatus = function(){
+        const getStatus = function(){
             if(status != "Done"){
-                if(new Date().getTime() >= dueDate.getTime()){
-                    status = "Overdue";
-                }
-                else{
-                    status = "Ongoing";
+                let daysLeft = fns.differenceInCalendarDays(dueDate, new Date());
+                switch(true){
+                    case (daysLeft == 0) : return "Today"; break;
+                    case (daysLeft == 1) : return "Tomorrow"; break;
+                    case (daysLeft < 0) : return "Overdue"; break;
+                    default : return daysLeft + " days left"; break;
                 }
             }
+            else return status;
         }
         const updateTasksStatus = function(){
             tasks.forEach(task =>{
@@ -164,17 +171,12 @@ const model = (function(){
         const todo = {
             ...noteMix(name, content),
             dueDate,
-            formattedDueDate : {
-                date : dueDate.toLocaleDateString(), 
-                time : dueDate.toLocaleTimeString()
-            },
-            updateStatus,
+            getStatus,
             updateTasksStatus,
             setDone,
             tasks,
             addTask,
             removeTask,
-            getStatus : () => status,
             getType : ()  => "todo",
         };
 
@@ -190,8 +192,11 @@ const model = (function(){
     
     return{
         defaultBook,
+        defaultNotes,
+        defaultTodos,
         bookList,
         openedBook,
+        getBookFromID,
         getOpenedBookFromID,
     }
     
