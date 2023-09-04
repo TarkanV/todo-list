@@ -122,14 +122,14 @@ body{
         }
 
 
-        .folder-hoverer:hover ~ .add-book, .add-book:hover{
+        .folder-hoverer:hover ~ .show-folder-more, .show-folder-more:hover{
             width : 1.5rem;
             
             img{
-                content: url("./img/add.svg");
+                content: url("./img/more.svg");
             }
         }
-        .add-book{
+        .show-folder-more{
             position: relative;
             z-index: 11;
             order: 3;
@@ -145,9 +145,31 @@ body{
                 filter : brightness(0%) invert(0.3);
                 content: url("");
             }
+
+            
             
         }
-
+        .folder-more{
+            display: none;
+        }
+        .folder-more.visible{
+            position: absolute;
+            background-color: hsl(0, 0%, 91%);
+            display: flex;
+            justify-content: space-evenly;
+            padding : 0.2rem;
+            border-radius: 8px;
+           
+            
+            left: 101%;
+             
+            z-index: 14;
+            button{
+                display: flex;
+                align-items: center;
+                border: none;
+            }
+        }
         //
         
         .expand-icon{

@@ -102,13 +102,13 @@ body {
   background-color: hsl(205, 53%, 79%);
   border-radius: 5px;
 }
-.hierarchy .folder .folder-hoverer:hover ~ .add-book, .hierarchy .folder .add-book:hover {
+.hierarchy .folder .folder-hoverer:hover ~ .show-folder-more, .hierarchy .folder .show-folder-more:hover {
   width: 1.5rem;
 }
-.hierarchy .folder .folder-hoverer:hover ~ .add-book img, .hierarchy .folder .add-book:hover img {
-  content: url("./img/add.svg");
+.hierarchy .folder .folder-hoverer:hover ~ .show-folder-more img, .hierarchy .folder .show-folder-more:hover img {
+  content: url("./img/more.svg");
 }
-.hierarchy .folder .add-book {
+.hierarchy .folder .show-folder-more {
   position: relative;
   z-index: 11;
   order: 3;
@@ -121,9 +121,27 @@ body {
   background-color: inherit;
   cursor: pointer;
 }
-.hierarchy .folder .add-book img {
+.hierarchy .folder .show-folder-more img {
   filter: brightness(0%) invert(0.3);
   content: url("");
+}
+.hierarchy .folder .folder-more {
+  display: none;
+}
+.hierarchy .folder .folder-more.visible {
+  position: absolute;
+  background-color: hsl(0, 0%, 91%);
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.2rem;
+  border-radius: 8px;
+  left: 101%;
+  z-index: 14;
+}
+.hierarchy .folder .folder-more.visible button {
+  display: flex;
+  align-items: center;
+  border: none;
 }
 .hierarchy .folder .expand-icon {
   order: 1;

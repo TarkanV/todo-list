@@ -7,7 +7,7 @@ const view = (function(){
     const bookNodeList = [];
     const openedBookNode = document.querySelector(".opened-book");
     let clickedBookNode;
-    let _targetBook = "this";
+    let _focusBookNode = "this";
     const noteListNode = document.querySelector(".note-list");
     const bindAddBook = function(bookNode){
         bookNode.addEventListener("click", () => {
@@ -31,14 +31,59 @@ const view = (function(){
          
         return bookNode;
     }
-    const catchAddBook = function(handler){
+    const closeOldFolderMore = function(){
+        const oldMore = defaultBookNode.querySelector(".folder-more.visible")
+            if(oldMore){
+                oldMore.classList.remove("visible");
+            }
+    }
+    const catchMoreBook = function(handler){
         defaultBookNode.addEventListener("click", (e) =>{
-            if(e.target.closest(".add-book")){
+            
+            closeOldFolderMore();
+
+            if(e.target.closest(".show-folder-more")){
+                const folderMore = e.target.closest(".show-folder-more").nextElementSibling;
+                folderMore.classList.toggle("visible");
+            }
+
+            else if(e.target.closest(".add-folder")){
                 const parentNode = e.target.closest(".folder");
-                _targetBook = parentNode;
+                _focusBookNode = parentNode;
                 const parentID = parentNode.dataset.id;
                 const newBook = handler(parentID);
             } 
+            else if(e.target.closest(".edit-folder")){
+                const bookNode = e.target.closest(".folder");
+                enableEditBookName(bookNode);
+            }
+            
+        });
+    }
+    const enableEditBookName = function(bookNode){
+        const textNode = bookNode.querySelector(".folder-title-text");
+        textNode.removeAttribute("readonly");
+        bookNode.classList.toggle("title-edit");
+    }
+    
+    const setEditBookName = function(handler){
+        
+        hierarchyNode.addEventListener("keyup", (e) =>{
+            
+            const textNode = e.target.closest(".folder-title-text");
+            if(textNode){
+                if(e.key == "Enter"){
+                    
+                    if(!textNode.getAttribute("readonly")){
+                        const bookNode = textNode.closest(".folder");
+                        const bookID = bookNode.dataset.id;
+                        const newBookName = textNode.value;
+                        handler(bookID, newBookName);
+                        textNode.setAttribute("readonly", true);
+                        bookNode.classList.remove("title-edit");
+                    }
+                }
+            }    
         });
     }
         
@@ -85,7 +130,7 @@ const view = (function(){
                         clickedBookNode.classList.toggle("selected");
                         const clickedBookID = clickedBookNode.dataset.id;
                         const clickedBook = handle(clickedBookID);
-
+                        console.log(`New Name : ${clickedBook.name}`);
                         loadBookNotes(clickedBook);
                     
                 
@@ -145,14 +190,16 @@ const view = (function(){
 
     return {
         showHierarchy,
-        catchAddBook,
+        catchMoreBook,
         loadBook,
         loadBookHierarchy,
         setOpenedBook,
         loadBookNotes,
         setBookCollapsing,
-        set targetBook(value){_targetBook = value;},
-        get targetBook(){return _targetBook},
+        enableEditBookName,
+        setEditBookName,
+        set focusBookNode(value){_focusBookNode = value;},
+        get focusBookNode(){return _focusBookNode},
         
         
     }

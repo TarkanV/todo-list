@@ -41,9 +41,12 @@ const model = (function(){
     let bookList = [];
     const makeBook = function(name){
         let children = []; 
-        
         const book = {
-            name,
+            name : name,
+            setName: function (newName) { 
+                this.name = newName; 
+                return this.name;
+              },
             id: ++refBookID, 
             children, 
             ...fileOperator,
@@ -56,6 +59,8 @@ const model = (function(){
         bookList.push(book);
         return book;
     }
+    
+    
 
     const defaultBook = {
         name : "Memobooks",
@@ -84,6 +89,8 @@ const model = (function(){
     bookList.push(defaultBook, defaultNotes, defaultTodos);
 
     let openedBook = defaultBook;
+    let focusBook;
+
     const getBookFromID = function(bookID){
         return bookList.find(book => bookID == book.id);  
     }
@@ -196,8 +203,10 @@ const model = (function(){
         defaultTodos,
         bookList,
         openedBook,
+        focusBook,
         getBookFromID,
         getOpenedBookFromID,
+        debugVar : "", 
     }
     
 })();

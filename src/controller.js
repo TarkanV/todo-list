@@ -48,27 +48,20 @@ const controller = (function(){
     const handleAddBook = function(bookID){
         const parentBook = model.getBookFromID(bookID);
         const newBook = parentBook.makeBook("New Book");
-        //console.log(view.targetBook);
-        const newBookNode = view.loadBook(newBook, view.targetBook);
-        const textNode = newBookNode.querySelector(".folder-title-text")
-        textNode.removeAttribute("readonly");
-        newBookNode.classList.toggle("title-edit");
-        textNode.addEventListener("keyup", (e) =>{
-            if(e.key == "Enter"){
-                if(!textNode.getAttribute("readonly")){
-                    textNode.setAttribute("readonly", true);
-                    newBookNode.classList.remove("title-edit");
-                }
-            
-            }    
-        });
-        
+        const newBookNode = view.loadBook(newBook, view.focusBookNode);
+        view.enableEditBookName(newBookNode);        
+    }
+    const handleEditBookName = function(bookID, newBookName){
+        const book = model.getBookFromID(bookID);
+        book.setName(newBookName);
     }
 
     const handleBookEvents = function(){
         view.setBookCollapsing();
         view.setOpenedBook(model.getOpenedBookFromID);
-        view.catchAddBook(handleAddBook);
+        view.catchMoreBook(handleAddBook);
+        view.setEditBookName(handleEditBookName);
+        
         
         
         
@@ -83,3 +76,8 @@ const controller = (function(){
 controller.loadAllBooks();
 controller.handleBookEvents();
 controller.loadDefaultBook(model.defaultTodos);
+
+document.addEventListener("keyup", (e) =>{
+    //console.log(`KEY : ${e.key}`);
+    if(e.key == "MediaTrackNext") console.log(`DEBUG : ${model.debugVar.name}`);
+});
