@@ -159,6 +159,7 @@ body{
             justify-content: space-evenly;
             padding : 0.2rem;
             border-radius: 8px;
+            
            
             
             left: 101%;
@@ -168,6 +169,14 @@ body{
                 display: flex;
                 align-items: center;
                 border: none;
+                font-size: 1.2rem;
+                &.add-folder{
+                    color: green;
+                }
+                &.delete-folder{
+                    color: red;
+                }
+                
             }
         }
         //

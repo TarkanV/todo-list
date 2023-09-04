@@ -32,6 +32,7 @@ myBook.makeNote("Eclipse of Empires", "Worlds collide as empires clash under an 
 myBook.makeNote("Songbird's Lament", "The music that awakens magic and changes destinies.");
 myBook.makeNote("Sands of Serendipity", "In the desert's embrace, a lost city reveals its secrets.");
 myBook.makeBook("The Third Book Of the Guy");
+console.log(myBook.parent);
 //
 
 
@@ -59,7 +60,7 @@ const controller = (function(){
     const handleBookEvents = function(){
         view.setBookCollapsing();
         view.setOpenedBook(model.getOpenedBookFromID);
-        view.catchMoreBook(handleAddBook);
+        view.catchMoreBook(handleAddBook, model.deleteBook);
         view.setEditBookName(handleEditBookName);
         
         

@@ -48,6 +48,7 @@ const model = (function(){
                 return this.name;
               },
             id: ++refBookID, 
+            parent,
             children, 
             ...fileOperator,
             makeBook,
@@ -98,6 +99,17 @@ const model = (function(){
         openedBook = getBookFromID(clickedBookID);
         
         return openedBook;
+    };
+    const deleteBook = function(bookID){
+        const book =  getBookFromID(bookID);
+        const parentBook = book.parent;
+        const childIDX = parentBook.children.indexOf(book);
+        const listChildIDX = bookList.indexOf(book);
+        console.log(`Child Index : ${childIDX}`);
+        console.log(`Book List Child : ${listChildIDX}`);
+        bookList.splice(listChildIDX, 1);
+        parentBook.children.splice(childIDX, 1);
+        
     };
 
     const noteMix = function(name, content){
@@ -206,6 +218,7 @@ const model = (function(){
         focusBook,
         getBookFromID,
         getOpenedBookFromID,
+        deleteBook,
         debugVar : "", 
     }
     

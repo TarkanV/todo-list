@@ -37,7 +37,7 @@ const view = (function(){
                 oldMore.classList.remove("visible");
             }
     }
-    const catchMoreBook = function(handler){
+    const catchMoreBook = function(addHandler, deleteHandler){
         defaultBookNode.addEventListener("click", (e) =>{
             
             closeOldFolderMore();
@@ -51,11 +51,17 @@ const view = (function(){
                 const parentNode = e.target.closest(".folder");
                 _focusBookNode = parentNode;
                 const parentID = parentNode.dataset.id;
-                const newBook = handler(parentID);
+                const newBook = addHandler(parentID);
             } 
             else if(e.target.closest(".edit-folder")){
                 const bookNode = e.target.closest(".folder");
                 enableEditBookName(bookNode);
+            }
+            else if(e.target.closest(".delete-folder")){
+                const bookNode = e.target.closest(".folder");
+                const bookID = bookNode.dataset.id;
+                deleteHandler(bookID);
+                bookNode.parentNode.removeChild(bookNode);
             }
             
         });
