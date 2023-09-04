@@ -142,6 +142,13 @@ body {
   display: flex;
   align-items: center;
   border: none;
+  font-size: 1.2rem;
+}
+.hierarchy .folder .folder-more.visible button.add-folder {
+  color: green;
+}
+.hierarchy .folder .folder-more.visible button.delete-folder {
+  color: red;
 }
 .hierarchy .folder .expand-icon {
   order: 1;
