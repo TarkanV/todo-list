@@ -31,7 +31,7 @@
                 <img class="ph-img" src="img/placeholder.png" />
                 <span class="folder-title-text">All Memos</span>
               </p>
-              <button class="add-book"><img  src="./img/add.svg"></button>  
+              <button class="show-folder-more"><img  src="./img/more.svg"></button>
               <ul class="list">
                 <li class="all-notes folder" data-id="N">
                   <div class="folder-hoverer"></div>
@@ -44,7 +44,7 @@
                     </span>
                     
                   </p>
-                  <button class="add-book"><img  src="./img/add.svg"></button>  
+                  <button class="show-folder-more"><img  src="./img/more.svg"></button>
                   <ul class="list">
                   </ul>
                 </li>
@@ -54,7 +54,7 @@
                   <p class="folder-title">    
                     <img class="ph-img" src="img/placeholder.png" />Todo
                   </p>
-                  <button class="add-book"><img  src="./img/add.svg"></button>  
+                  <button class="show-folder-more"><img  src="./img/more.svg"></button>
                 </li>
               </ul>
             </li>
@@ -66,7 +66,7 @@
                 <span clas="folder-title-text">Memobooks</span>
               </p>
               <div class="folder-hoverer"></div>
-              <button class="add-book"><img  src="./img/add.svg"></button>  
+              <button class="show-folder-more"><img  src="./img/more.svg"></button>
               <ul class="list">
                 <template id="template-folder">
                   <li class="folder">
@@ -76,7 +76,12 @@
                         <img class="ph-img" src="img/placeholder.png" />
                         <input class="folder-title-text" readonly>       
                     </span>
-                    <button class="add-book"><img  src="./img/add.svg"></button>  
+                    <button class="show-folder-more"><img  src="./img/more.svg"></button>
+                    <div class="folder-more">
+                      <button class="edit-folder"><img src="./img/edit.svg">Rename</button>
+                      <button class="add-folder"><img src="./img/add.svg">Add</button>
+                      <button class="delete-folder"><img src="./img/delete.svg">Delete</button>
+                    </div>
                     <ul class="list"></ul>
                   </li>
                 </template>
