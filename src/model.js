@@ -93,13 +93,18 @@ const model = (function(){
     let focusBook;
 
     const getBookFromID = function(bookID){
-        return bookList.find(book => bookID == book.id);  
+        return bookList.find(book => book.id == bookID);  
     }
     const getOpenedBookFromID = function(clickedBookID){
         openedBook = getBookFromID(clickedBookID);
         
         return openedBook;
     };
+    const getBookNoteFromID = function(bookID, noteID){
+        const book = getBookFromID(bookID);
+        return book.children.find(note => note.id == noteID);
+    }
+
     const deleteBook = function(bookID){
         const book =  getBookFromID(bookID);
         const parentBook = book.parent;
@@ -150,12 +155,18 @@ const model = (function(){
         const removeTask = function(content){
             tasks.splice(tasks.indexOf(content), 1);
         } 
-
+        
         const getStatus = function(){
             if(status != "Done"){
                 let daysLeft = fns.differenceInCalendarDays(dueDate, new Date());
+                let secLeft = fns.differenceInSeconds(dueDate, new Date());
+                console.log("Days Left : " + daysLeft);
                 switch(true){
-                    case (daysLeft == 0) : return "Today"; break;
+                    case (daysLeft == 0) : 
+                        if(secLeft > 0)
+                            return "Today";
+                        else return "Overdue";
+                    break;
                     case (daysLeft == 1) : return "Tomorrow"; break;
                     case (daysLeft < 0) : return "Overdue"; break;
                     default : return daysLeft + " days left"; break;
@@ -163,6 +174,20 @@ const model = (function(){
             }
             else return status;
         }
+
+
+        const getPreciseStatus = function(){
+            if(status != "Done"){
+                let timeLeft = fns.differenceInSeconds(dueDate, new Date());
+                console.log(`Left : ${timeLeft}`);
+                switch(true){        
+                    case (timeLeft < 0) : return "Overdue"; break;
+                    default : return `${Math.floor(timeLeft/60)} minutes left`; break;
+                }
+            }
+            else return status; 
+        }
+
         const updateTasksStatus = function(){
             tasks.forEach(task =>{
                 if(!task.checked){
@@ -172,16 +197,18 @@ const model = (function(){
             status = "Done";
         }
 
-        const setDone = function(isDone){
-            if(isDone){
+        const switchStatus = function(){
+            if(status != "Done"){
                 status = "Done";
                 tasks.forEach(task => task.checked = true);
             }
             else {
                 status = "Ongoing";
+                status = this.getStatus();
+                console.log(`MStatus : ${status}`);
                 tasks.forEach(task => task.checked = false);
-                this.updateStatus();
-        };
+            }
+            return status;
            
         
 
@@ -191,8 +218,9 @@ const model = (function(){
             ...noteMix(name, content),
             dueDate,
             getStatus,
+            getPreciseStatus,
             updateTasksStatus,
-            setDone,
+            switchStatus,
             tasks,
             addTask,
             removeTask,
@@ -218,6 +246,7 @@ const model = (function(){
         focusBook,
         getBookFromID,
         getOpenedBookFromID,
+        getBookNoteFromID,
         deleteBook,
         debugVar : "", 
     }

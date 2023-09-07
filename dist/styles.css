@@ -259,7 +259,7 @@ body {
     display: none;
   }
 }
-.opened-book .note .note-date {
+.opened-book .note .note-date, .opened-book .note .note-status {
   position: absolute;
   bottom: 0.2rem;
 }
@@ -272,23 +272,23 @@ body {
   align-items: center;
   margin-bottom: 0.5rem;
 }
-.todo .task-status {
+.todo .note-check {
   position: relative;
   margin-right: 0.2rem;
   height: 28px;
 }
-.todo .task-status img {
+.todo .note-check img {
   position: relative;
   cursor: pointer;
   width: 28px;
   height: 28px;
   filter: brightness(100%) grayscale(100%) invert(0.3);
 }
-.todo.checked .task-status {
+.todo.checked .note-check {
   background-color: hsl(160, 43%, 75%);
   border-radius: 30px;
 }
-.todo.checked .task-status img {
+.todo.checked .note-check img {
   filter: brightness(0%) invert(1);
 }
 .todo .todo-top {

@@ -134,10 +134,14 @@ const view = (function(){
                         if(clickedBookNode) clickedBookNode.classList.toggle("selected");
                         clickedBookNode = e.target.closest(".folder");
                         clickedBookNode.classList.toggle("selected");
+
                         const clickedBookID = clickedBookNode.dataset.id;
+                        
+
                         const clickedBook = handle(clickedBookID);
                         console.log(`New Name : ${clickedBook.name}`);
                         loadBookNotes(clickedBook);
+                        openedBookNode.dataset.id = clickedBook.id;
                     
                 
             }
@@ -162,6 +166,7 @@ const view = (function(){
             }
             
         });  
+        openedBookNode.dataset.id = clickedBook.id;
     }
 
     const loadNote = function(note){
@@ -169,23 +174,56 @@ const view = (function(){
         noteNode.querySelector(".note-name").textContent = note.name;
         noteNode.querySelector(".note-content").textContent = note.content;
         noteNode.querySelector(".note-date").textContent = note.formattedCreationDate.date;
+        
+        noteNode.dataset.id = note.id;
+        console.log(`Note ID : ${noteNode.dataset.id}`);
         return noteNode;
     }
 
-    const catchTodoCheck = function(todoNode, todo){
-        todoNode.addEventListener("click", (e) =>{
-            e.stopPropagation();
-            todoNode.classList.toggle("checked");
-            
-        });
-    }
+    
     const loadTodo = function(todo){
         const todoNode = templateTodo.content.cloneNode(true).firstElementChild;
         todoNode.querySelector(".note-name").textContent = todo.name;
         todoNode.querySelector(".note-content").textContent = todo.content;
-        todoNode.querySelector(".note-date").textContent = todo.getStatus();
-        catchTodoCheck(todoNode, todo.status);
+        todoNode.querySelector(".note-status").textContent = todo.getStatus();
+        todoNode.dataset.id = todo.id;
+        
         return todoNode;
+    }
+
+    const catchTodoCheck = function(todoCheckHandler){
+        openedBookNode.addEventListener("click", (e) =>{
+            
+            if(e.target.closest(".note-check")){
+                e.stopPropagation();
+                console.log("Clicked");
+                const todoNode = e.target.closest(".todo");
+                const statusNode = todoNode.querySelector(".note-status");
+
+                const openedBookID = openedBookNode.dataset.id;
+                const todoID  = todoNode.dataset.id;
+                const status = todoCheckHandler(openedBookID, todoID);
+                
+                statusNode.textContent = status;
+                todoNode.classList.toggle("checked");
+                
+            }
+        });
+    }
+    const updateTodoStatus = function(statusGetter){
+        const seconds = 5;
+        setInterval(() =>{
+            const openedBookID = openedBookNode.dataset.id;
+            const todoNodes = openedBookNode.querySelectorAll(".todo");
+            todoNodes.forEach(todoNode => {
+                let todoInfo = {
+                    id : todoNode.dataset.id,
+                    parentID : openedBookID,
+                }
+                todoNode.querySelector(".note-status").textContent = statusGetter(todoInfo);
+            });
+        }, seconds * 1000);
+            
     }
 
     
@@ -201,6 +239,8 @@ const view = (function(){
         loadBookHierarchy,
         setOpenedBook,
         loadBookNotes,
+        catchTodoCheck,
+        updateTodoStatus,
         setBookCollapsing,
         enableEditBookName,
         setEditBookName,

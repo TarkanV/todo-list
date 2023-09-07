@@ -333,7 +333,7 @@ body{
             }
         }
 
-        .note-date{
+        .note-date, .note-status{
             position: absolute;
             bottom : 0.2rem;
         }  
@@ -349,7 +349,7 @@ body{
         align-items: center;
         margin-bottom: 0.5rem;
     }
-    .task-status{
+    .note-check{
         position: relative;
         margin-right : 0.2rem;
         height: 28px;
@@ -363,7 +363,7 @@ body{
              
         }
     }
-    &.checked .task-status{
+    &.checked .note-check{
         background-color: hsl(160, 43%, 75%);
         
         border-radius: 30px;

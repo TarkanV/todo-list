@@ -23,8 +23,8 @@ book1.makeNote("Whispers in the Wind", "Mysteries unfold with every breeze in a 
 //Note Sample
 myBook.makeNote("Great Sailor", "The great sailor was a well known sailor who has conquered all the seas.");
 let todo = myBook.makeTodo("Workout Time", `- Do 10 pushups 
-- Eat healthy`, fns.add(new Date(), {days: -1, seconds: 200,}));
-myBook.makeTodo("Red Light Therapy", "- Sit Still \n - Read Big Book \n - Deage :v", fns.add(new Date(), {days: 7,}));
+- Eat healthy`, fns.add(new Date(), {days: 0, seconds: 15,}));
+myBook.makeTodo("Red Light Therapy", "- Sit Still \n - Read Big Book \n - Deage :v", fns.add(new Date(), {days: 0, minutes: 10,}));
 
 myBook.makeNote("Chronicles of the Celestial Pirate", "A spacefaring rogue seeks treasure beyond the stars.");
 myBook.makeNote("The Alchemist's Daughter", "Potions, destiny, and the power of a hidden lineage.");
@@ -56,6 +56,16 @@ const controller = (function(){
         const book = model.getBookFromID(bookID);
         book.setName(newBookName);
     }
+    const handleTodoCheck = function(bookID, todoID){
+        const todo = model.getBookNoteFromID(bookID, todoID);
+        const status = todo.switchStatus();
+        
+        return status;
+    }
+    const getTodoStatus = function(todoInfo){
+        const todo = model.getBookNoteFromID(todoInfo.parentID, todoInfo.id);
+        return todo.getStatus();
+    }
 
     const handleBookEvents = function(){
         view.setBookCollapsing();
@@ -64,19 +74,24 @@ const controller = (function(){
         view.setEditBookName(handleEditBookName);
         
         
-        
-        
+    }
+    const handleNoteEvents = function(){
+        view.catchTodoCheck(handleTodoCheck);
+        view.updateTodoStatus(getTodoStatus);
     }
     return{
         loadAllBooks,
         handleBookEvents, 
+        handleNoteEvents,
         loadDefaultBook,  
     }
 })();
 
 controller.loadAllBooks();
 controller.handleBookEvents();
+controller.handleNoteEvents();
 controller.loadDefaultBook(model.defaultTodos);
+
 
 document.addEventListener("keyup", (e) =>{
     //console.log(`KEY : ${e.key}`);
