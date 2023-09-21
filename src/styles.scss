@@ -2,6 +2,9 @@
     max-width : 40px;
     max-height : 40px;
 }
+:root{
+    scrollbar-width:thin;
+}
 body{
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -15,8 +18,10 @@ body{
     
 }
 .top{
+    position: relative;
+    z-index: 10;
     padding : 0.3rem 1rem;
-    background-color: hsl(206, 30%, 74%);
+    background-color: hsl(215, 35%, 79%);
     box-shadow: 0 2px 4px gray;
     grid-column: 1/-1;
     display: flex;
@@ -63,17 +68,28 @@ body{
 
   
 }
-.hierarchy, .opened-book, .note-editor{
-    border : 1px solid lightgray;
+.hierarchy, .opened-book, .editor{
     flex: 1;
-    height : 100vh;
+    height: 100vh;
+    box-sizing: border-box;
+    position: relative;
+    
 }
 .hierarchy{
     
+    z-index: 4;
+    box-shadow: 1px 1px 4px gray;
+    background-color: hsl(215, 20%, 86%);
+    flex: 1;
     padding-left: 1rem;
     padding-top : 1rem;
     font-size : 1.2rem;
-
+    .folder-title-text{
+        color : hsl(0, 0%, 15%);
+    }
+    &> .list{
+        padding: 0;
+    }
     .main-folder > .folder-title{
         font-weight: bold;
         font-size: 1.5rem;
@@ -89,7 +105,7 @@ body{
         grid-template-columns: max-content auto auto;
         grid-template-rows: max-content max-content;
 
-
+        
         
         .folder-hoverer{
             position: absolute;
@@ -107,7 +123,7 @@ body{
             content: "";
             height : 2.5rem;
             width: 100%;
-            background-color: hsl(205, 53%, 89%);
+            background-color: hsl(215, 23%, 79%);
             border-radius: 5px;
             order: 0;
         } 
@@ -117,7 +133,7 @@ body{
             content: "";
             height : 2.5rem;
             width: 100%;
-            background-color: hsl(205, 53%, 79%); 
+            background-color: hsl(215, 23%, 69%);
             border-radius: 5px;
         }
 
@@ -154,14 +170,11 @@ body{
         }
         .folder-more.visible{
             position: absolute;
-            background-color: hsl(0, 0%, 91%);
+            background-color: hsl(215, 0%, 91%);
             display: flex;
             justify-content: space-evenly;
             padding : 0.2rem;
-            border-radius: 8px;
-            
-           
-            
+            border-radius: 8px;            
             left: 101%;
              
             z-index: 14;
@@ -240,7 +253,7 @@ body{
             width: 0px;
             
             
-            border : 1px solid black;
+            border : 1px solid hsl(210, 10%, 30%);
             justify-self: center;
         }
 
@@ -254,6 +267,7 @@ body{
        
         
     }
+    
 
 }
 
@@ -279,32 +293,77 @@ body{
 } 
 
 .opened-book{
-    padding: 0.1rem;
-    overflow-y: scroll;
+    z-index: 3;
+    background-color: hsl(215, 20%, 80%);
+    box-shadow: 0 1px 4px gray;
+  
+  
+    display: flex;
+    flex-direction: column;
+    
+   
+    
     .opened-book-title{
         display: flex;
         align-items: center;
-        gap: 1rem;     
+        gap: 1rem; 
+        padding-left: 0.5rem; 
+        background-color: hsl(215, 23%, 82%);   
        
     }
+    .add-file{
+        position: relative;
+        display: flex;
+        button{
+            padding : 0.5rem;
+            font-size : 1rem;
+        }
+        .file-more-button{
+            img{width : 1rem;}
+        }
+        
+        .file-more{
+    
+            width: 0;
+            height: 0;
+            
+            overflow: hidden;
+            &.visible{
+
+                display: inline-block;
+                width: auto;
+                height:auto;
+                
+                position: relative;
+            }
+        }
+    }
     .note-list{
-        padding : 0;
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: start;
+        padding: 0 0.1rem;
+        margin : 0;
+        height:100vmax;
+        overflow-y: scroll;
+        scrollbar-color:  hsl(212, 57%, 61%) #C2D2E4;
+        scrollbar-width:thin;
     
     }
+
     .note{
         cursor: pointer;
-        background-color: hsl(120, 10%, 90%);
-        border : 1px solid hsl(60, 10%, 60%);
-        box-shadow: 0 2px 4px gray;
+        background-color: hsl(210, 15%, 85%);
+        border : 1px solid hsl(210, 10%, 60%);
+        box-shadow: 0 2px 4px hsl(210, 10%, 20%);
         border-radius: 5px;
     
         display : flex;
         justify-content: space-between;
-        margin : 0;
         list-style: none;
         padding: 0.5rem;
-        margin: 0.6rem 0.2rem;
-        height : 95px;
+        margin: 0.3rem 0.2rem;
+        min-height: 95px;
         position: relative;
         
         .note-details-text{
@@ -339,7 +398,7 @@ body{
         }  
     }
     .note:focus{
-        outline : 2px solid hsl(56, 18%, 68%);
+        outline : 4px solid hsl(200, 15%, 38%);
     }
 }
 
@@ -376,7 +435,48 @@ body{
     }
 }
 
-.note-editor{
+.editor{
+    max-width: 0;
+    overflow: hidden;
+    background-color: hsl(215, 20%, 86%);
+    transition-duration: 0.3s;
+    &.visible{
+        max-width: 100%;
+        transition-duration: 1s;
+    }
+
+   .note-editor{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .editor-note-name{
+        font-weight: bold;
+        font-size : 1.5rem;
+        width : 95%;
+        border: none;
+    }
     
+    .editor-tools{
+        width: 100%;
+        height : 1.5rem;
+        background-color: hsl(215, 10%, 90%);
+    }
+    .editor-content{
+        flex: 1;
+        padding: 0 1rem;
+         width: 95%;
+        .editor-text{
+            word-break:break-all;
+            resize: none;
+            width: 100%;
+            max-height: 100%;
+            background-color: hsl(215, 10%, 90%);
+            border : none;
+            outline: none;
+            font-size : 1rem;
+        }
+    }
+   } 
 }
 

@@ -89,13 +89,13 @@ const model = (function(){
 
     bookList.push(defaultBook, defaultNotes, defaultTodos);
 
-    let openedBook = defaultBook;
+    let openedBook;
     let focusBook;
 
     const getBookFromID = function(bookID){
         return bookList.find(book => book.id == bookID);  
     }
-    const getOpenedBookFromID = function(clickedBookID){
+    const setOpenedBookFromID = function(clickedBookID){
         openedBook = getBookFromID(clickedBookID);
         
         return openedBook;
@@ -104,14 +104,28 @@ const model = (function(){
         const book = getBookFromID(bookID);
         return book.children.find(note => note.id == noteID);
     }
+    const getOpenedNoteFromID = function(openedNoteID){
+        console.log(`Opened Book : ${openedBook.name}`);  
+        return getBookNoteFromID(openedBook.id, openedNoteID);
+    }
+    const setOpenedBook = function(book){
+        openedBook = book;
+    }
 
+    const deleteNote = function(noteID){
+        const note = getOpenedNoteFromID(noteID);
+        const noteIDX = note.parent.children.indexOf(note);
+        const defaultNoteIDX = defaultNotes.children.indexOf(note);
+        note.parent.children.splice(noteIDX, 1);
+        defaultNotes.children.splice(defaultNoteIDX);
+    }
+    
     const deleteBook = function(bookID){
         const book =  getBookFromID(bookID);
         const parentBook = book.parent;
         const childIDX = parentBook.children.indexOf(book);
         const listChildIDX = bookList.indexOf(book);
-        console.log(`Child Index : ${childIDX}`);
-        console.log(`Book List Child : ${listChildIDX}`);
+        
         bookList.splice(listChildIDX, 1);
         parentBook.children.splice(childIDX, 1);
         
@@ -179,7 +193,7 @@ const model = (function(){
         const getPreciseStatus = function(){
             if(status != "Done"){
                 let timeLeft = fns.differenceInSeconds(dueDate, new Date());
-                console.log(`Left : ${timeLeft}`);
+                
                 switch(true){        
                     case (timeLeft < 0) : return "Overdue"; break;
                     default : return `${Math.floor(timeLeft/60)} minutes left`; break;
@@ -205,7 +219,7 @@ const model = (function(){
             else {
                 status = "Ongoing";
                 status = this.getStatus();
-                console.log(`MStatus : ${status}`);
+                
                 tasks.forEach(task => task.checked = false);
             }
             return status;
@@ -242,12 +256,15 @@ const model = (function(){
         defaultNotes,
         defaultTodos,
         bookList,
-        openedBook,
+        setOpenedBook,
+        get openedBook(){ return openedBook},
         focusBook,
         getBookFromID,
-        getOpenedBookFromID,
+        setOpenedBookFromID,
         getBookNoteFromID,
+        getOpenedNoteFromID,
         deleteBook,
+        deleteNote,
         debugVar : "", 
     }
     

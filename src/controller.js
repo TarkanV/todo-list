@@ -32,7 +32,7 @@ myBook.makeNote("Eclipse of Empires", "Worlds collide as empires clash under an 
 myBook.makeNote("Songbird's Lament", "The music that awakens magic and changes destinies.");
 myBook.makeNote("Sands of Serendipity", "In the desert's embrace, a lost city reveals its secrets.");
 myBook.makeBook("The Third Book Of the Guy");
-console.log(myBook.parent);
+
 //
 
 
@@ -40,7 +40,9 @@ console.log(myBook.parent);
 
 const controller = (function(){
     const loadDefaultBook = function(book){
-        model.openedBook = book;
+        model.setOpenedBook(book);
+        
+        
         view.loadBookNotes(model.openedBook);
     }
     const loadAllBooks = function(){
@@ -56,28 +58,47 @@ const controller = (function(){
         const book = model.getBookFromID(bookID);
         book.setName(newBookName);
     }
-    const handleTodoCheck = function(bookID, todoID){
-        const todo = model.getBookNoteFromID(bookID, todoID);
+
+    
+    const handleAddNote = function(){
+        const newNote = model.openedBook.makeNote("Untitled Note");
+        return {newNote : newNote, selectedBook: model.openedBook};
+    }
+    const handleEditNote = function(noteID){
+        
+        const note = model.getOpenedNoteFromID(noteID);
+        return Object.assign(note);
+    }
+    const handleDeleteNote = function(noteID){
+        model.deleteNote(noteID);
+    }
+
+    const handleTodoCheck = function(todoID){
+        
+        const todo = model.getOpenedNoteFromID(todoID);
         const status = todo.switchStatus();
         
         return status;
     }
-    const getTodoStatus = function(todoInfo){
-        const todo = model.getBookNoteFromID(todoInfo.parentID, todoInfo.id);
+    const getTodoStatus = function(noteID){
+        const todo = model.getOpenedNoteFromID(noteID);
         return todo.getStatus();
     }
 
     const handleBookEvents = function(){
         view.setBookCollapsing();
-        view.setOpenedBook(model.getOpenedBookFromID);
+        view.setOpenedBook(model.setOpenedBookFromID);
         view.catchMoreBook(handleAddBook, model.deleteBook);
         view.setEditBookName(handleEditBookName);
         
         
     }
     const handleNoteEvents = function(){
+        view.catchEditNote(handleEditNote);
         view.catchTodoCheck(handleTodoCheck);
         view.updateTodoStatus(getTodoStatus);
+        view.catchAddNote(handleAddNote);
+        view.catchDeleteNote(handleDeleteNote);
     }
     return{
         loadAllBooks,
@@ -90,7 +111,7 @@ const controller = (function(){
 controller.loadAllBooks();
 controller.handleBookEvents();
 controller.handleNoteEvents();
-controller.loadDefaultBook(model.defaultTodos);
+controller.loadDefaultBook(myBook);
 
 
 document.addEventListener("keyup", (e) =>{

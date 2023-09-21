@@ -6,9 +6,11 @@ const view = (function(){
     const hierarchyNode = document.querySelector(".hierarchy");
     const bookNodeList = [];
     const openedBookNode = document.querySelector(".opened-book");
-    let clickedBookNode;
+    let selectedBookNode;
     let _focusBookNode = "this";
     const noteListNode = document.querySelector(".note-list");
+    let selectedNoteNode;
+    const editorNode = document.querySelector(".editor");
     const bindAddBook = function(bookNode){
         bookNode.addEventListener("click", () => {
 
@@ -46,6 +48,7 @@ const view = (function(){
                 const folderMore = e.target.closest(".show-folder-more").nextElementSibling;
                 folderMore.classList.toggle("visible");
             }
+            
 
             else if(e.target.closest(".add-folder")){
                 const parentNode = e.target.closest(".folder");
@@ -131,17 +134,17 @@ const view = (function(){
                 if(e.target.closest(".folder-hoverer")){
                         // If previous selected book exist, toggle it off
                         console.log("this is happening");
-                        if(clickedBookNode) clickedBookNode.classList.toggle("selected");
-                        clickedBookNode = e.target.closest(".folder");
-                        clickedBookNode.classList.toggle("selected");
+                        if(selectedBookNode) selectedBookNode.classList.toggle("selected");
+                        selectedBookNode = e.target.closest(".folder");
+                        selectedBookNode.classList.toggle("selected");
 
-                        const clickedBookID = clickedBookNode.dataset.id;
+                        const selectedBookID = selectedBookNode.dataset.id;
                         
 
-                        const clickedBook = handle(clickedBookID);
-                        console.log(`New Name : ${clickedBook.name}`);
-                        loadBookNotes(clickedBook);
-                        openedBookNode.dataset.id = clickedBook.id;
+                        const selectedBook = handle(selectedBookID);
+                        
+                        loadBookNotes(selectedBook);
+                        openedBookNode.dataset.id = selectedBook.id;
                     
                 
             }
@@ -151,14 +154,14 @@ const view = (function(){
 
 
     // Notes methods
-    const loadBookNotes = function(clickedBook){
-        //const bookNodeID = clickedBookNode.dataset.id; 
+    const loadBookNotes = function(selectedBook){
+        //const bookNodeID = selectedBookNode.dataset.id; 
         
         while(noteListNode.firstElementChild) noteListNode.removeChild(noteListNode.firstElementChild);
         
-        openedBookNode.querySelector(".opened-book-title > h2").textContent = clickedBook.name;
+        openedBookNode.querySelector(".opened-book-title > h2").textContent = selectedBook.name;
         
-        clickedBook.children.forEach((child) => {
+        selectedBook.children.forEach((child) => {
             
             if(child.getType() != "book"){
                 const noteNode = (child.getType() == "note") ? loadNote(child) : loadTodo(child); 
@@ -166,7 +169,7 @@ const view = (function(){
             }
             
         });  
-        openedBookNode.dataset.id = clickedBook.id;
+        openedBookNode.dataset.id = selectedBook.id;
     }
 
     const loadNote = function(note){
@@ -176,7 +179,7 @@ const view = (function(){
         noteNode.querySelector(".note-date").textContent = note.formattedCreationDate.date;
         
         noteNode.dataset.id = note.id;
-        console.log(`Note ID : ${noteNode.dataset.id}`);
+        
         return noteNode;
     }
 
@@ -190,6 +193,59 @@ const view = (function(){
         
         return todoNode;
     }
+    const setEditNote = function(note){
+        editorNode.querySelector(".editor-note-name").value = note.name;
+        editorNode.querySelector(".editor-text").textContent = note.content;
+        editorNode.dataset.id = note.id;
+        editorNode.classList.add("visible");
+    }
+
+    const catchEditNote = function(handler){
+        openedBookNode.addEventListener("click", (e) =>{
+            if(e.target.closest(".note")){
+                const noteNode = e.target.closest(".note");
+                selectedNoteNode = noteNode;
+                const note = handler(noteNode.dataset.id);
+            }
+        });
+        openedBookNode.addEventListener("dblclick", (e) =>{
+            if(e.target.closest(".note")){
+                const noteNode = e.target.closest(".note");
+                selectedNoteNode = noteNode;
+                const note = handler(noteNode.dataset.id);
+                setEditNote(note);          
+            }
+        });
+    };
+    
+    const catchAddNote = function(handler){
+        openedBookNode.addEventListener("click", (e)=>{
+            if(e.target.closest(".add-note")){
+                const {newNote, selectedBook} = handler(); 
+                loadBookNotes(selectedBook);
+                setEditNote(newNote);
+                noteListNode.scrollTop = -noteListNode.scrollHeight;
+            }
+            const moreOption = (function(){
+                if(e.target.closest(".file-more-button")){
+                    const fileMore = e.target.closest(".file-more-button").nextElementSibling;
+                    fileMore.classList.toggle("visible");
+                }
+                
+            })();
+        });
+        
+    }
+    const catchDeleteNote = function(handler){
+        openedBookNode.addEventListener("click", (e)=>{
+            if(e.target.closest(".file-delete") && selectedNoteNode){
+                handler(selectedNoteNode.dataset.id)        
+                noteListNode.removeChild(selectedNoteNode);
+                selectedNoteNode = null;
+                editorNode.classList.remove("visible");
+            }
+        });
+    }
 
     const catchTodoCheck = function(todoCheckHandler){
         openedBookNode.addEventListener("click", (e) =>{
@@ -199,10 +255,8 @@ const view = (function(){
                 console.log("Clicked");
                 const todoNode = e.target.closest(".todo");
                 const statusNode = todoNode.querySelector(".note-status");
-
-                const openedBookID = openedBookNode.dataset.id;
                 const todoID  = todoNode.dataset.id;
-                const status = todoCheckHandler(openedBookID, todoID);
+                const status = todoCheckHandler(todoID);
                 
                 statusNode.textContent = status;
                 todoNode.classList.toggle("checked");
@@ -213,14 +267,11 @@ const view = (function(){
     const updateTodoStatus = function(statusGetter){
         const seconds = 5;
         setInterval(() =>{
-            const openedBookID = openedBookNode.dataset.id;
+        
             const todoNodes = openedBookNode.querySelectorAll(".todo");
             todoNodes.forEach(todoNode => {
-                let todoInfo = {
-                    id : todoNode.dataset.id,
-                    parentID : openedBookID,
-                }
-                todoNode.querySelector(".note-status").textContent = statusGetter(todoInfo);
+                const todoID = todoNode.dataset.id;
+                todoNode.querySelector(".note-status").textContent = statusGetter(todoID);
             });
         }, seconds * 1000);
             
@@ -239,11 +290,16 @@ const view = (function(){
         loadBookHierarchy,
         setOpenedBook,
         loadBookNotes,
+        catchEditNote,
+        catchAddNote,
+        catchDeleteNote,
         catchTodoCheck,
         updateTodoStatus,
         setBookCollapsing,
         enableEditBookName,
         setEditBookName,
+
+
         set focusBookNode(value){_focusBookNode = value;},
         get focusBookNode(){return _focusBookNode},
         
