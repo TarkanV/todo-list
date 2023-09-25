@@ -1,482 +1,483 @@
-.ph-img{
-    max-width : 40px;
-    max-height : 40px;
+.ph-img {
+	max-width: 40px;
+	max-height: 40px;
 }
-:root{
-    scrollbar-width:thin;
+:root {
+	scrollbar-width: thin;
 }
-body{
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color : lightcyan;
+body {
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: lightcyan;
+	height: 100vh;
 }
-.container{
-    
-    
-    height: 100vh;
-    
-    
+.container {
+	display: grid;
+	grid-template-rows: min-content min-content;
+	height: 100vh;
 }
-.top{
-    position: relative;
-    z-index: 10;
-    padding : 0.3rem 1rem;
-    background-color: hsl(215, 35%, 79%);
-    box-shadow: 0 2px 4px gray;
-    grid-column: 1/-1;
-    display: flex;
-    align-items: center;
+.top {
+	position: relative;
+	z-index: 10;
+	padding: 0.3rem 1rem;
+	background-color: hsl(215, 35%, 79%);
+	box-shadow: 0 2px 4px gray;
 
-    
-    .logo{
-        max-width : 40px;
-        max-height : 40px;
-    }
+	display: flex;
+	align-items: center;
 
-    .title{
-        margin-left : 1rem;
-    }
-    .dropdown-menu{
-         @extend .ph-img;
-         margin : 0px 1rem;
-    }
-    
-    .search-bar{
-        position: relative;
-        border-radius: 5px;
-        margin : 1rem;
-        flex : 1;
-    &::before{
+	.logo {
+		max-width: 40px;
+		max-height: 40px;
+	}
+
+	.title {
+		margin-left: 1rem;
+	}
+	.dropdown-menu {
+		@extend .ph-img;
+		margin: 0px 1rem;
+	}
+
+	.search-bar {
+		position: relative;
+		border-radius: 5px;
+		margin: 1rem;
+		flex: 1;
+		&::before {
+			position: relative;
+			content: "";
+			background-image: url("./img/placeholder.png");
+			max-width: 30px;
+			max-height: 30px;
+		}
+	}
+	.profile-pic {
+		@extend .ph-img;
+		img {
+			width: 100%;
+		}
+	}
+}
+.middle {
+	display: flex;
+}
+.hierarchy,
+.opened-book,
+.editor {
+	flex: 1;
+	height: 100vh;
+	box-sizing: border-box;
+	position: relative;
+}
+.hierarchy {
+	min-height: 100%;
+	z-index: 4;
+	box-shadow: 1px 1px 4px gray;
+	background-color: hsl(215, 20%, 86%);
+	flex: 1;
+	padding-left: 1rem;
+	padding-top: 1rem;
+	font-size: 1.2rem;
+    overflow-y: auto;
+	
+	.folder-title-text {
+		color: hsl(0, 0%, 15%);
+	}
+	& > .list {
+		padding: 0;
         
-        position: relative;
-        content: "";
-        background-image: url("./img/placeholder.png");
-        max-width: 30px;
-        max-height: 30px;
-    }
-    }
-    .profile-pic{
-        @extend .ph-img;
-        img{
-            width : 100%;
-        }
-    }
+	}
+	.main-folder > .folder-title {
+		font-weight: bold;
+		font-size: 1.5rem;
+	}
 
-}
-.middle{
-    display: flex;
+	.folder {
+		position: relative;
+		list-style: none;
+		cursor: pointer;
+		display: grid;
+		grid-template-columns: max-content auto auto;
+		grid-template-rows: max-content max-content;
 
-  
-}
-.hierarchy, .opened-book, .editor{
-    flex: 1;
-    height: 100vh;
-    box-sizing: border-box;
-    position: relative;
-    
-}
-.hierarchy{
-    
-    z-index: 4;
-    box-shadow: 1px 1px 4px gray;
-    background-color: hsl(215, 20%, 86%);
-    flex: 1;
-    padding-left: 1rem;
-    padding-top : 1rem;
-    font-size : 1.2rem;
-    .folder-title-text{
-        color : hsl(0, 0%, 15%);
-    }
-    &> .list{
-        padding: 0;
-    }
-    .main-folder > .folder-title{
-        font-weight: bold;
-        font-size: 1.5rem;
-        
-    }
+		.folder-hoverer {
+			position: absolute;
+			width: 100%;
+			height: 2.5rem;
+			z-index: 10;
+		}
+		&.title-edit .folder-hoverer {
+			z-index: 0;
+		}
+		// Color of folder change on hover and click
+		&:hover::after {
+			display: block;
+			position: absolute;
+			content: "";
+			height: 2.5rem;
+			width: 100%;
+			background-color: hsl(215, 23%, 79%);
+			border-radius: 5px;
+			order: 0;
+		}
 
-    .folder{
-        
-        position: relative;
-        list-style: none;
-        cursor: pointer;
-        display: grid;
-        grid-template-columns: max-content auto auto;
-        grid-template-rows: max-content max-content;
+		&.selected::after {
+			position: absolute;
+			content: "";
+			height: 2.5rem;
+			width: 100%;
+			background-color: hsl(215, 23%, 69%);
+			border-radius: 5px;
+		}
 
-        
-        
-        .folder-hoverer{
-            position: absolute;
-            width: 100%;
-            height: 2.5rem;
-            z-index: 10;
-        }
-        &.title-edit .folder-hoverer{
-            z-index: 0;
-        }
-        // Color of folder change on hover and click
-        &:hover::after{
-            display: block;
-            position: absolute;
-            content: "";
-            height : 2.5rem;
-            width: 100%;
-            background-color: hsl(215, 23%, 79%);
-            border-radius: 5px;
-            order: 0;
-        } 
-        
-        &.selected::after{
-            position: absolute;
-            content: "";
-            height : 2.5rem;
-            width: 100%;
-            background-color: hsl(215, 23%, 69%);
-            border-radius: 5px;
-        }
-
-
-        .folder-hoverer:hover ~ .show-folder-more, .show-folder-more:hover{
-            width : 1.5rem;
-            
-            img{
-                content: url("./img/more.svg");
-            }
-        }
-        .show-folder-more{
-            position: relative;
-            z-index: 11;
-            order: 3;
-            justify-self: end;
-            align-self: center;
-            width : 1.5rem;
-            height: 1.5rem;
-            margin-right : 0.5rem;
-            border : none;
-            background-color: inherit;
-            cursor: pointer;    
-            img{
-                filter : brightness(0%) invert(0.3);
-                content: url("");
-            }
-
-            
-            
-        }
+		.folder-hoverer:hover  ~ .folder-more .show-folder-more,
+		.folder-more > .show-folder-more:hover {
+	
+				
+			img {
+				opacity: 100%;
+				
+			}
+		}
         .folder-more{
-            display: none;
-        }
-        .folder-more.visible{
-            position: absolute;
-            background-color: hsl(215, 0%, 91%);
-            display: flex;
-            justify-content: space-evenly;
-            padding : 0.2rem;
-            border-radius: 8px;            
-            left: 101%;
-             
-            z-index: 14;
-            button{
-                display: flex;
-                align-items: center;
-                border: none;
-                font-size: 1.2rem;
-                &.add-folder{
-                    color: green;
-                }
-                &.delete-folder{
-                    color: red;
-                }
-                
-            }
-        }
-        //
-        
-        .expand-icon{
-            order : 1;
-            align-self: center;
-            z-index: 2;
-        }
-        
-        .folder-title{
-            
-            
-            order : 2;
-            z-index: 2;
-            width: 100%;
-            display: flex;
-            align-items: center;
             position: relative;
-            .folder-click{
-                display: contents;
-                
-            }
-            
-            margin : 0rem 0;
-            padding : 0.4rem 0;
-            .ph-img{
-                margin-right : 10px;
-                width : 25px;
-                height: 25px;
-            }
-            .folder-title-text{
-                width: 100%;
-                font-size: 1.1rem;
-                
-            }
-            .folder-title-text:read-only{
-                outline: none;
-                border : none;
-                font-size: inherit;
-                background-color: inherit;
-                cursor: pointer;
-            }
-            
-        }
-        
-        
+		
+				z-index: 11;
+				order: 3;
+				justify-self: end;
+				align-self: center;
 
-        .list{
-            grid-column: 2/-1;
-            margin-top : 0;
-            order : 5;  
-            padding-left : 0;
-                   
-        }
-
-        &::before{
-            
-            order : 4;
-            content : "";
-            width: 0px;
-            
-            
-            border : 1px solid hsl(210, 10%, 30%);
-            justify-self: center;
-        }
-
-        &.collapsed > .list{
-            
-            display: none;
-        }
-        
-        
-
-       
-        
-    }
-    
-
-}
-
-.expand-icon{
-    img{
-        width: 26px;
-    
-    }
-}
-.folder.collapsed .expand-icon > img{
-    content: url("./img/expand_up.svg");
-}
-
-.folder:not(:has(.folder-title + ul > li)) .expand-icon{
-    width: 26px;
-    height: 26px;
-    
-    
-    img{
-        display: none;
-    }
-
-} 
-
-.opened-book{
-    z-index: 3;
-    background-color: hsl(215, 20%, 80%);
-    box-shadow: 0 1px 4px gray;
-  
-  
-    display: flex;
-    flex-direction: column;
-    
-   
-    
-    .opened-book-title{
-        display: flex;
-        align-items: center;
-        gap: 1rem; 
-        padding-left: 0.5rem; 
-        background-color: hsl(215, 23%, 82%);   
-       
-    }
-    .add-file{
-        position: relative;
-        display: flex;
-        button{
-            padding : 0.5rem;
-            font-size : 1rem;
-        }
-        .file-more-button{
-            img{width : 1rem;}
-        }
-        
-        .file-more{
-    
-            width: 0;
-            height: 0;
-            
-            overflow: hidden;
-            &.visible{
-
-                display: inline-block;
-                width: auto;
-                height:auto;
-                
-                position: relative;
-            }
-        }
-    }
-    .note-list{
-        display: flex;
-        flex-direction: column-reverse;
-        justify-content: start;
-        padding: 0 0.1rem;
-        margin : 0;
-        height:100vmax;
-        overflow-y: scroll;
-        scrollbar-color:  hsl(212, 57%, 61%) #C2D2E4;
-        scrollbar-width:thin;
-    
-    }
-
-    .note{
-        cursor: pointer;
-        background-color: hsl(210, 15%, 85%);
-        border : 1px solid hsl(210, 10%, 60%);
-        box-shadow: 0 2px 4px hsl(210, 10%, 20%);
-        border-radius: 5px;
-    
-        display : flex;
-        justify-content: space-between;
-        list-style: none;
-        padding: 0.5rem;
-        margin: 0.3rem 0.2rem;
-        min-height: 95px;
-        position: relative;
-        
-        .note-details-text{
-            overflow: hidden;
-            max-height: 5rem;
-        }
-
-        h3{
-            margin: 0;
-            
-        }
-        .note-content{
-           
-           
-            
-        }
-
-        .note-icon{
-           /*background-color: lightpink; width: 95px; height: 95px;*/
-        }
-
-        @media (max-width: 800px) {
-            .note-icon{
+			.show-folder-more {
+				
+				width: 1.5rem;
+				height: 1.5rem;
+				margin-right: 0.5rem;
+				border: none;
+				background-color: inherit;
+				cursor: pointer;
+				img {
+					filter: brightness(0%) invert(0.3);
+					opacity: 0%;
+				}
+			}
+            .folder-more-tools {
                 display: none;
-                
+
+
+            }
+
+            .folder-more-tools.visible {
+                position: absolute;
+                background-color: hsl(215, 0%, 91%);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-evenly;
+                padding: 0.2rem;
+                border-radius: 8px;
+				top : 0;
+                right : 100%;
+
+                z-index: 14;
+                button {
+                    display: flex;
+                    align-items: center;
+                    border: none;
+                    font-size: 1.2rem;
+                    &.add-folder {
+                        color: green;
+                    }
+                    &.delete-folder {
+                        color: red;
+                    }
+                }
             }
         }
+		//
 
-        .note-date, .note-status{
-            position: absolute;
-            bottom : 0.2rem;
-        }  
-    }
-    .note:focus{
-        outline : 4px solid hsl(200, 15%, 38%);
-    }
+		.folder-title {
+			order: 2;
+			z-index: 2;
+			width: 100%;
+			display: flex;
+			align-items: center;
+			position: relative;
+			.folder-click {
+				display: contents;
+			}
+
+			margin: 0rem 0;
+			padding: 0.4rem 0;
+			.ph-img {
+				margin-right: 10px;
+				width: 25px;
+				height: 25px;
+			}
+			.folder-title-text {
+				width: 100%;
+				font-size: 1.1rem;
+			}
+			.folder-title-text:read-only {
+				outline: none;
+				border: none;
+				font-size: inherit;
+				background-color: inherit;
+				cursor: pointer;
+			}
+		}
+
+		.list {
+			grid-column: 2/-1;
+			margin-top: 0;
+			order: 5;
+			padding-left: 0;
+		}
+
+		&::before {
+			order: 4;
+			content: "";
+			width: 0px;
+
+			border: 1px solid hsl(210, 10%, 30%);
+			justify-self: center;
+		}
+
+		&.collapsed > .list {
+			display: none;
+		}
+
+		.expand-icon {
+			user-select: none;
+			order: 1;
+			align-self: center;
+			z-index: 30;
+			img {
+				width: 26px;
+				height: 26px;
+			}
+		}
+
+		&.collapsed .expand-icon > img {
+			content: url("./img/expand_up.svg");
+		}
+
+		&.empty > .expand-icon {
+            height : 0;
+            overflow: hidden;
+		}
+	}
 }
 
-.todo{
-    .todo-top{
-        display: flex;
-        align-items: center;
-        margin-bottom: 0.5rem;
-    }
-    .note-check{
-        position: relative;
-        margin-right : 0.2rem;
-        height: 28px;
-        
-        img{
-            position: relative;
-            cursor: pointer; 
-            width: 28px;
-            height: 28px;
-            filter:brightness(100%) grayscale(100%) invert(0.3);
-             
-        }
-    }
-    &.checked .note-check{
-        background-color: hsl(160, 43%, 75%);
-        
-        border-radius: 30px;
-        img{
-            filter:brightness(0%) invert(1); 
-        } 
-    }
-    .todo-top{
-        display: flex;
-    }
+.opened-book {
+	z-index: 3;
+	background-color: hsl(215, 20%, 80%);
+	box-shadow: 0 1px 4px gray;
+
+	display: flex;
+	flex-direction: column;
+
+	.opened-book-title {
+		display: flex;
+
+		align-items: center;
+		gap: 1rem;
+		padding-left: 0.5rem;
+		background-color: hsl(215, 23%, 82%);
+	}
+	.add-file {
+		position: relative;
+		display: flex;
+		padding-bottom: 0.5rem;
+		button {
+			padding: 0.5rem;
+			font-size: 1rem;
+		}
+		.file-more-button {
+			img {
+				width: 1rem;
+			}
+		}
+
+		.file-more {
+			width: 0;
+			height: 0;
+
+			overflow: hidden;
+			&.visible {
+				display: inline-block;
+				width: auto;
+				height: auto;
+
+				position: relative;
+			}
+		}
+	}
+	.note-list {
+		display: flex;
+		flex-direction: column;
+		justify-content: start;
+
+		padding: 0 0.1rem;
+		margin: 0;
+		height: 100%;
+		overflow-y: scroll;
+		scrollbar-color: hsl(212, 57%, 61%) #c2d2e4;
+		scrollbar-width: thin;
+	}
+
+	.note {
+		cursor: pointer;
+		user-select: none;
+		background-color: hsl(210, 15%, 85%);
+		border: 1px solid hsl(210, 10%, 60%);
+		box-shadow: 0 2px 4px hsl(210, 10%, 20%);
+		border-radius: 5px;
+		flex: 0 0 auto;
+
+		display: flex;
+		justify-content: space-between;
+		list-style: none;
+		padding: 0.5rem;
+		margin: 0.3rem 0.2rem;
+		height: 95px;
+		position: relative;
+
+		.note-details-text {
+			overflow: hidden;
+			max-height: 5rem;
+		}
+
+		h3 {
+			margin: 0;
+		}
+		.note-content {
+		}
+
+		.note-icon {
+			/*background-color: lightpink; width: 95px; height: 95px;*/
+		}
+
+		@media (max-width: 800px) {
+			.note-icon {
+				display: none;
+			}
+		}
+
+		.note-date,
+		.note-status {
+			position: absolute;
+			bottom: 0.2rem;
+		}
+	}
+	.note:focus {
+		outline: 4px solid hsl(200, 15%, 38%);
+	}
+
+	.note.deleting {
+		background-color: red;
+		height: 0;
+		padding: 0;
+		margin: 0;
+
+		transition: 0.3s;
+		& > * {
+			opacity: 0;
+			transition: 0.3s;
+		}
+
+		overflow: hidden;
+	}
+	.todo {
+		.todo-top {
+			display: flex;
+			align-items: center;
+			margin-bottom: 0.5rem;
+		}
+		.note-check {
+			position: relative;
+			margin-right: 0.2rem;
+			height: 28px;
+
+			img {
+				position: relative;
+				cursor: pointer;
+				width: 28px;
+				height: 28px;
+				filter: brightness(100%) grayscale(100%) invert(0.3);
+			}
+		}
+		&.checked .note-check {
+			background-color: hsl(160, 43%, 75%);
+
+			border-radius: 30px;
+			img {
+				filter: brightness(0%) invert(1);
+			}
+		}
+		.todo-top {
+			display: flex;
+		}
+	}
 }
 
-.editor{
-    max-width: 0;
-    overflow: hidden;
-    background-color: hsl(215, 20%, 86%);
-    transition-duration: 0.3s;
-    &.visible{
-        max-width: 100%;
-        transition-duration: 1s;
-    }
+.editor {
+	max-width: 0;
+	overflow: hidden;
+	background-color: hsl(215, 20%, 86%);
+	transition-duration: 0.3s;
 
-   .note-editor{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+	&.visible {
+		max-width: 33%;
+		transition-duration: 0.3s;
+	}
+	.note-editor {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		.editor-note-save {
+		}
+		.editor-tools {
+			width: 100%;
+			height: 1.5rem;
+			background-color: hsl(215, 10%, 90%);
+		}
 
-    .editor-note-name{
-        font-weight: bold;
-        font-size : 1.5rem;
-        width : 95%;
-        border: none;
-    }
-    
-    .editor-tools{
-        width: 100%;
-        height : 1.5rem;
-        background-color: hsl(215, 10%, 90%);
-    }
-    .editor-content{
-        flex: 1;
-        padding: 0 1rem;
-         width: 95%;
-        .editor-text{
-            word-break:break-all;
-            resize: none;
-            width: 100%;
-            max-height: 100%;
-            background-color: hsl(215, 10%, 90%);
-            border : none;
-            outline: none;
-            font-size : 1rem;
-        }
-    }
-   } 
+		.editor-content {
+			margin-top: 2rem;
+			padding: 0 1rem;
+			width: 100%;
+
+			.editor-note-name {
+				margin-bottom: 2rem;
+				font-weight: bold;
+				font-size: 1.5rem;
+				width: 100%;
+				background-color: inherit;
+				border: none;
+			}
+			.editor-text {
+				word-break: break-all;
+				resize: none;
+				width: 100%;
+				max-height: 100%;
+
+				border: none;
+				outline: none;
+				font-size: 1rem;
+			}
+		}
+		.editor-status {
+			height: 2rem;
+			width: 100%;
+			border: 2px solid red;
+			margin-top: auto;
+			align-self: end;
+		}
+	}
 }
 
+.dialog {
+	position: absolute;
+	display: none;
+}

@@ -30,11 +30,20 @@ const view = (function(){
         bookNode.querySelector(".folder-title .folder-title-text").value = book.name;
         bookNode.setAttribute("data-id", book.id);
         
+    
+        updateBookContentStatus(parentNode);
          
         return bookNode;
     }
+    const updateBookContentStatus = function(bookNode){
+        const hasSubFolders = bookNode.querySelector(".list").childNodes.length;
+        console.log("Name : " + bookNode.querySelector(".folder-title-text").value + " Subs : " +  hasSubFolders);
+        if(!hasSubFolders) 
+            bookNode.classList.add("empty");
+        else bookNode.classList.remove("empty");
+    }
     const closeOldFolderMore = function(){
-        const oldMore = defaultBookNode.querySelector(".folder-more.visible")
+        const oldMore = defaultBookNode.querySelector(".folder-more-tools.visible")
             if(oldMore){
                 oldMore.classList.remove("visible");
             }
@@ -45,6 +54,7 @@ const view = (function(){
             closeOldFolderMore();
 
             if(e.target.closest(".show-folder-more")){
+                console.log("Something is happening here.");
                 const folderMore = e.target.closest(".show-folder-more").nextElementSibling;
                 folderMore.classList.toggle("visible");
             }
@@ -64,7 +74,10 @@ const view = (function(){
                 const bookNode = e.target.closest(".folder");
                 const bookID = bookNode.dataset.id;
                 deleteHandler(bookID);
-                bookNode.parentNode.removeChild(bookNode);
+                const parentBookNode = bookNode.parentNode.parentNode;
+                bookNode.remove();
+                updateBookContentStatus(parentBookNode);
+                
             }
             
         });
@@ -121,6 +134,7 @@ const view = (function(){
         
         hierarchyNode.addEventListener("click", (e)=>{
             if(e.target.closest(".expand-icon")){
+                console.log("EXPAND");
                 e.stopPropagation();
                 const bookNode = e.target.parentNode.parentNode;
                 bookNode.classList.toggle("collapsed");
@@ -133,7 +147,7 @@ const view = (function(){
             
                 if(e.target.closest(".folder-hoverer")){
                         // If previous selected book exist, toggle it off
-                        console.log("this is happening");
+                        
                         if(selectedBookNode) selectedBookNode.classList.toggle("selected");
                         selectedBookNode = e.target.closest(".folder");
                         selectedBookNode.classList.toggle("selected");
@@ -161,7 +175,7 @@ const view = (function(){
         
         openedBookNode.querySelector(".opened-book-title > h2").textContent = selectedBook.name;
         
-        selectedBook.children.forEach((child) => {
+        [...selectedBook.children].reverse().forEach((child) => {
             
             if(child.getType() != "book"){
                 const noteNode = (child.getType() == "note") ? loadNote(child) : loadTodo(child); 
@@ -237,12 +251,27 @@ const view = (function(){
         
     }
     const catchDeleteNote = function(handler){
+        let transition = false;
         openedBookNode.addEventListener("click", (e)=>{
-            if(e.target.closest(".file-delete") && selectedNoteNode){
-                handler(selectedNoteNode.dataset.id)        
-                noteListNode.removeChild(selectedNoteNode);
-                selectedNoteNode = null;
-                editorNode.classList.remove("visible");
+            
+            if(e.target.closest(".file-delete") && selectedNoteNode && !transition){
+                
+            
+                console.log("Something");
+                selectedNoteNode.classList.toggle("deleting");
+                transition = true;
+                selectedNoteNode.addEventListener("transitionend", (e) => {
+                    
+                    if(e.propertyName == "height"){
+                        handler(selectedNoteNode.dataset.id);   
+                        selectedNoteNode = e.target.nextElementSibling;   
+                        e.target.remove();
+                        
+                        editorNode.classList.remove("visible");   
+                        transition = false;
+                    } 
+                });  
+                
             }
         });
     }
@@ -252,7 +281,7 @@ const view = (function(){
             
             if(e.target.closest(".note-check")){
                 e.stopPropagation();
-                console.log("Clicked");
+                
                 const todoNode = e.target.closest(".todo");
                 const statusNode = todoNode.querySelector(".note-status");
                 const todoID  = todoNode.dataset.id;

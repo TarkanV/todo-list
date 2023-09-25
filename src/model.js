@@ -50,6 +50,7 @@ const model = (function(){
             id: ++refBookID, 
             parent,
             children, 
+            hasSubFolders(){return children.find((file) =>file.getType() == "book")},
             ...fileOperator,
             makeBook,
             makeNote,
@@ -105,7 +106,7 @@ const model = (function(){
         return book.children.find(note => note.id == noteID);
     }
     const getOpenedNoteFromID = function(openedNoteID){
-        console.log(`Opened Book : ${openedBook.name}`);  
+        //console.log(`Opened Book : ${openedBook.name}`);  
         return getBookNoteFromID(openedBook.id, openedNoteID);
     }
     const setOpenedBook = function(book){
@@ -174,7 +175,7 @@ const model = (function(){
             if(status != "Done"){
                 let daysLeft = fns.differenceInCalendarDays(dueDate, new Date());
                 let secLeft = fns.differenceInSeconds(dueDate, new Date());
-                console.log("Days Left : " + daysLeft);
+                //console.log("Days Left : " + daysLeft);
                 switch(true){
                     case (daysLeft == 0) : 
                         if(secLeft > 0)

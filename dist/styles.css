@@ -11,9 +11,12 @@ body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   background-color: lightcyan;
+  height: 100vh;
 }
 
 .container {
+  display: grid;
+  grid-template-rows: min-content min-content;
   height: 100vh;
 }
 
@@ -23,7 +26,6 @@ body {
   padding: 0.3rem 1rem;
   background-color: hsl(215, 35%, 79%);
   box-shadow: 0 2px 4px gray;
-  grid-column: 1/-1;
   display: flex;
   align-items: center;
 }
@@ -58,7 +60,9 @@ body {
   display: flex;
 }
 
-.hierarchy, .opened-book, .editor {
+.hierarchy,
+.opened-book,
+.editor {
   flex: 1;
   height: 100vh;
   box-sizing: border-box;
@@ -66,6 +70,7 @@ body {
 }
 
 .hierarchy {
+  min-height: 100%;
   z-index: 4;
   box-shadow: 1px 1px 4px gray;
   background-color: hsl(215, 20%, 86%);
@@ -73,6 +78,7 @@ body {
   padding-left: 1rem;
   padding-top: 1rem;
   font-size: 1.2rem;
+  overflow-y: auto;
 }
 .hierarchy .folder-title-text {
   color: hsl(0, 0%, 15%);
@@ -119,18 +125,18 @@ body {
   background-color: hsl(215, 23%, 69%);
   border-radius: 5px;
 }
-.hierarchy .folder .folder-hoverer:hover ~ .show-folder-more, .hierarchy .folder .show-folder-more:hover {
-  width: 1.5rem;
+.hierarchy .folder .folder-hoverer:hover ~ .folder-more .show-folder-more img,
+.hierarchy .folder .folder-more > .show-folder-more:hover img {
+  opacity: 100%;
 }
-.hierarchy .folder .folder-hoverer:hover ~ .show-folder-more img, .hierarchy .folder .show-folder-more:hover img {
-  content: url("./img/more.svg");
-}
-.hierarchy .folder .show-folder-more {
+.hierarchy .folder .folder-more {
   position: relative;
   z-index: 11;
   order: 3;
   justify-self: end;
   align-self: center;
+}
+.hierarchy .folder .folder-more .show-folder-more {
   width: 1.5rem;
   height: 1.5rem;
   margin-right: 0.5rem;
@@ -138,39 +144,36 @@ body {
   background-color: inherit;
   cursor: pointer;
 }
-.hierarchy .folder .show-folder-more img {
+.hierarchy .folder .folder-more .show-folder-more img {
   filter: brightness(0%) invert(0.3);
-  content: url("");
+  opacity: 0%;
 }
-.hierarchy .folder .folder-more {
+.hierarchy .folder .folder-more .folder-more-tools {
   display: none;
 }
-.hierarchy .folder .folder-more.visible {
+.hierarchy .folder .folder-more .folder-more-tools.visible {
   position: absolute;
   background-color: hsl(215, 0%, 91%);
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
   padding: 0.2rem;
   border-radius: 8px;
-  left: 101%;
+  top: 0;
+  right: 100%;
   z-index: 14;
 }
-.hierarchy .folder .folder-more.visible button {
+.hierarchy .folder .folder-more .folder-more-tools.visible button {
   display: flex;
   align-items: center;
   border: none;
   font-size: 1.2rem;
 }
-.hierarchy .folder .folder-more.visible button.add-folder {
+.hierarchy .folder .folder-more .folder-more-tools.visible button.add-folder {
   color: green;
 }
-.hierarchy .folder .folder-more.visible button.delete-folder {
+.hierarchy .folder .folder-more .folder-more-tools.visible button.delete-folder {
   color: red;
-}
-.hierarchy .folder .expand-icon {
-  order: 1;
-  align-self: center;
-  z-index: 2;
 }
 .hierarchy .folder .folder-title {
   order: 2;
@@ -217,21 +220,22 @@ body {
 .hierarchy .folder.collapsed > .list {
   display: none;
 }
-
-.expand-icon img {
-  width: 26px;
+.hierarchy .folder .expand-icon {
+  user-select: none;
+  order: 1;
+  align-self: center;
+  z-index: 30;
 }
-
-.folder.collapsed .expand-icon > img {
-  content: url("./img/expand_up.svg");
-}
-
-.folder:not(:has(.folder-title + ul > li)) .expand-icon {
+.hierarchy .folder .expand-icon img {
   width: 26px;
   height: 26px;
 }
-.folder:not(:has(.folder-title + ul > li)) .expand-icon img {
-  display: none;
+.hierarchy .folder.collapsed .expand-icon > img {
+  content: url("./img/expand_up.svg");
+}
+.hierarchy .folder.empty > .expand-icon {
+  height: 0;
+  overflow: hidden;
 }
 
 .opened-book {
@@ -251,6 +255,7 @@ body {
 .opened-book .add-file {
   position: relative;
   display: flex;
+  padding-bottom: 0.5rem;
 }
 .opened-book .add-file button {
   padding: 0.5rem;
@@ -272,27 +277,29 @@ body {
 }
 .opened-book .note-list {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   justify-content: start;
   padding: 0 0.1rem;
   margin: 0;
-  height: 100vmax;
+  height: 100%;
   overflow-y: scroll;
-  scrollbar-color: hsl(212, 57%, 61%) #C2D2E4;
+  scrollbar-color: hsl(212, 57%, 61%) #c2d2e4;
   scrollbar-width: thin;
 }
 .opened-book .note {
   cursor: pointer;
+  user-select: none;
   background-color: hsl(210, 15%, 85%);
   border: 1px solid hsl(210, 10%, 60%);
   box-shadow: 0 2px 4px hsl(210, 10%, 20%);
   border-radius: 5px;
+  flex: 0 0 auto;
   display: flex;
   justify-content: space-between;
   list-style: none;
   padding: 0.5rem;
   margin: 0.3rem 0.2rem;
-  min-height: 95px;
+  height: 95px;
   position: relative;
 }
 .opened-book .note .note-details-text {
@@ -310,39 +317,51 @@ body {
     display: none;
   }
 }
-.opened-book .note .note-date, .opened-book .note .note-status {
+.opened-book .note .note-date,
+.opened-book .note .note-status {
   position: absolute;
   bottom: 0.2rem;
 }
 .opened-book .note:focus {
   outline: 4px solid hsl(200, 15%, 38%);
 }
-
-.todo .todo-top {
+.opened-book .note.deleting {
+  background-color: red;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  transition: 0.3s;
+  overflow: hidden;
+}
+.opened-book .note.deleting > * {
+  opacity: 0;
+  transition: 0.3s;
+}
+.opened-book .todo .todo-top {
   display: flex;
   align-items: center;
   margin-bottom: 0.5rem;
 }
-.todo .note-check {
+.opened-book .todo .note-check {
   position: relative;
   margin-right: 0.2rem;
   height: 28px;
 }
-.todo .note-check img {
+.opened-book .todo .note-check img {
   position: relative;
   cursor: pointer;
   width: 28px;
   height: 28px;
   filter: brightness(100%) grayscale(100%) invert(0.3);
 }
-.todo.checked .note-check {
+.opened-book .todo.checked .note-check {
   background-color: hsl(160, 43%, 75%);
   border-radius: 30px;
 }
-.todo.checked .note-check img {
+.opened-book .todo.checked .note-check img {
   filter: brightness(0%) invert(1);
 }
-.todo .todo-top {
+.opened-book .todo .todo-top {
   display: flex;
 }
 
@@ -353,19 +372,14 @@ body {
   transition-duration: 0.3s;
 }
 .editor.visible {
-  max-width: 100%;
-  transition-duration: 1s;
+  max-width: 33%;
+  transition-duration: 0.3s;
 }
 .editor .note-editor {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-.editor .note-editor .editor-note-name {
-  font-weight: bold;
-  font-size: 1.5rem;
-  width: 95%;
-  border: none;
 }
 .editor .note-editor .editor-tools {
   width: 100%;
@@ -373,17 +387,36 @@ body {
   background-color: hsl(215, 10%, 90%);
 }
 .editor .note-editor .editor-content {
-  flex: 1;
+  margin-top: 2rem;
   padding: 0 1rem;
-  width: 95%;
+  width: 100%;
+}
+.editor .note-editor .editor-content .editor-note-name {
+  margin-bottom: 2rem;
+  font-weight: bold;
+  font-size: 1.5rem;
+  width: 100%;
+  background-color: inherit;
+  border: none;
 }
 .editor .note-editor .editor-content .editor-text {
   word-break: break-all;
   resize: none;
   width: 100%;
   max-height: 100%;
-  background-color: hsl(215, 10%, 90%);
   border: none;
   outline: none;
   font-size: 1rem;
+}
+.editor .note-editor .editor-status {
+  height: 2rem;
+  width: 100%;
+  border: 2px solid red;
+  margin-top: auto;
+  align-self: end;
+}
+
+.dialog {
+  position: absolute;
+  display: none;
 }/*# sourceMappingURL=styles.css.map */
