@@ -10,7 +10,10 @@ const view = (function(){
     let _focusBookNode = "this";
     const noteListNode = document.querySelector(".note-list");
     let selectedNoteNode;
+    let openedNoteNode;
     const editorNode = document.querySelector(".editor");
+    const editorStatus = document.querySelector(".editor-status > p");
+    let saveNoteDelay;
     const bindAddBook = function(bookNode){
         bookNode.addEventListener("click", () => {
 
@@ -212,9 +215,10 @@ const view = (function(){
         editorNode.querySelector(".editor-text").textContent = note.content;
         editorNode.dataset.id = note.id;
         editorNode.classList.add("visible");
+        openedNoteNode = selectedNoteNode;
     }
 
-    const catchEditNote = function(handler){
+    const catchSelectedNote = function(handler){
         openedBookNode.addEventListener("click", (e) =>{
             if(e.target.closest(".note")){
                 const noteNode = e.target.closest(".note");
@@ -222,6 +226,9 @@ const view = (function(){
                 const note = handler(noteNode.dataset.id);
             }
         });
+        
+    };
+    const catchOpenedNote = function(handler){
         openedBookNode.addEventListener("dblclick", (e) =>{
             if(e.target.closest(".note")){
                 const noteNode = e.target.closest(".note");
@@ -230,7 +237,7 @@ const view = (function(){
                 setEditNote(note);          
             }
         });
-    };
+    }
     
     const catchAddNote = function(handler){
         openedBookNode.addEventListener("click", (e)=>{
@@ -250,6 +257,26 @@ const view = (function(){
         });
         
     }
+    const catchNoteEdition = function(noteSaver){
+        editorNode.addEventListener("input", (e)=>{
+        console.log("Note has been edited");
+        editorStatus.textContent = "Saving...";
+
+        clearTimeout(saveNoteDelay); 
+
+        saveNoteDelay = setTimeout(()=>{
+            const newNoteName = editorNode.querySelector(".editor-note-name").value;
+            const newNoteContent = editorNode.querySelector(".editor-text").textContent;
+            noteSaver(newNoteName, newNoteContent);
+            editorStatus.textContent = "Note Saved!";
+        
+        },1500
+        );
+
+        });
+    }
+  
+
     const catchDeleteNote = function(handler){
         let transition = false;
         openedBookNode.addEventListener("click", (e)=>{
@@ -293,7 +320,7 @@ const view = (function(){
             }
         });
     }
-    const updateTodoStatus = function(statusGetter){
+    const watchTodoStatus = function(statusGetter){
         const seconds = 5;
         setInterval(() =>{
         
@@ -308,6 +335,8 @@ const view = (function(){
 
     
 
+    
+
 
     
 
@@ -319,11 +348,13 @@ const view = (function(){
         loadBookHierarchy,
         setOpenedBook,
         loadBookNotes,
-        catchEditNote,
+        catchSelectedNote,
+        catchOpenedNote,
         catchAddNote,
+        catchNoteEdition,
         catchDeleteNote,
         catchTodoCheck,
-        updateTodoStatus,
+        watchTodoStatus,
         setBookCollapsing,
         enableEditBookName,
         setEditBookName,

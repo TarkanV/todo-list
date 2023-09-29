@@ -59,46 +59,59 @@ const controller = (function(){
         book.setName(newBookName);
     }
 
-    
-    const handleAddNote = function(){
-        const newNote = model.openedBook.makeNote("Untitled Note");
-        return {newNote : newNote, selectedBook: model.openedBook};
+    const handleSelectedNote = function(noteID){    
+        const note = model.getSelectedNoteFromID(noteID);
+        return Object.assign(note);
     }
-    const handleEditNote = function(noteID){
-        
+    const handleOpenedNote = function(noteID){    
         const note = model.getOpenedNoteFromID(noteID);
         return Object.assign(note);
     }
+    
+    const handleAddNote = function(){
+        const newNote = model.openedBook.makeNote("Untitled Note");
+        model.getOpenedNoteFromID(newNote.id);
+        model.getSelectedNoteFromID(newNote.id);
+        return {newNote : newNote, selectedBook: model.openedBook};
+    }
+
+    const handleSaveNote = function(newNoteName, newNoteContent){
+        model.openedNote.name = newNoteName;
+        model.openedNote.content = newNoteContent;
+        view.loadBookNotes(model.openedBook);   
+    }
+
     const handleDeleteNote = function(noteID){
         model.deleteNote(noteID);
     }
 
     const handleTodoCheck = function(todoID){
         
-        const todo = model.getOpenedNoteFromID(todoID);
+        const todo = model.getSelectedNoteFromID(todoID);
         const status = todo.switchStatus();
         
         return status;
     }
     const getTodoStatus = function(noteID){
-        const todo = model.getOpenedNoteFromID(noteID);
+        const todo = model.getSelectedNoteFromID(noteID);
         return todo.getStatus();
     }
 
     const handleBookEvents = function(){
         view.setBookCollapsing();
-        view.setOpenedBook(model.setOpenedBookFromID);
+        view.setOpenedBook(model.getOpenedBookFromID);
         view.catchMoreBook(handleAddBook, model.deleteBook);
-        view.setEditBookName(handleEditBookName);
-        
-        
+        view.setEditBookName(handleEditBookName);  
     }
     const handleNoteEvents = function(){
-        view.catchEditNote(handleEditNote);
+        view.catchSelectedNote(handleSelectedNote)
+        view.catchOpenedNote(handleOpenedNote)
         view.catchTodoCheck(handleTodoCheck);
-        view.updateTodoStatus(getTodoStatus);
+        view.watchTodoStatus(getTodoStatus);
         view.catchAddNote(handleAddNote);
+        view.catchNoteEdition(handleSaveNote);
         view.catchDeleteNote(handleDeleteNote);
+        
     }
     return{
         loadAllBooks,

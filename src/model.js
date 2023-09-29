@@ -92,11 +92,12 @@ const model = (function(){
 
     let openedBook;
     let focusBook;
+    let openedNote;
 
     const getBookFromID = function(bookID){
         return bookList.find(book => book.id == bookID);  
     }
-    const setOpenedBookFromID = function(clickedBookID){
+    const getOpenedBookFromID = function(clickedBookID){
         openedBook = getBookFromID(clickedBookID);
         
         return openedBook;
@@ -105,9 +106,13 @@ const model = (function(){
         const book = getBookFromID(bookID);
         return book.children.find(note => note.id == noteID);
     }
-    const getOpenedNoteFromID = function(openedNoteID){
-        //console.log(`Opened Book : ${openedBook.name}`);  
-        return getBookNoteFromID(openedBook.id, openedNoteID);
+    const getSelectedNoteFromID = function(selectedNoteID){
+        //console.log(`Opened Book : ${openedBook.name}`);    
+        return getBookNoteFromID(openedBook.id, selectedNoteID);
+    }
+    const getOpenedNoteFromID = function(openedNoteID) {
+        openedNote = getBookNoteFromID(openedBook.id, openedNoteID);
+        return openedNote;
     }
     const setOpenedBook = function(book){
         openedBook = book;
@@ -259,10 +264,12 @@ const model = (function(){
         bookList,
         setOpenedBook,
         get openedBook(){ return openedBook},
+        get openedNote(){ return openedNote},
         focusBook,
         getBookFromID,
-        setOpenedBookFromID,
+        getOpenedBookFromID,
         getBookNoteFromID,
+        getSelectedNoteFromID,
         getOpenedNoteFromID,
         deleteBook,
         deleteNote,

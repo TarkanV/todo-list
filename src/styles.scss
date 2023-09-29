@@ -422,12 +422,12 @@ body {
 
 .editor {
 	max-width: 0;
-	overflow: hidden;
+	
 	background-color: hsl(215, 20%, 86%);
 	transition-duration: 0.3s;
 
 	&.visible {
-		max-width: 33%;
+		max-width: unset;	
 		transition-duration: 0.3s;
 	}
 	.note-editor {
@@ -446,7 +446,7 @@ body {
 		.editor-content {
 			margin-top: 2rem;
 			padding: 0 1rem;
-			width: 100%;
+			
 
 			.editor-note-name {
 				margin-bottom: 2rem;
@@ -468,11 +468,18 @@ body {
 			}
 		}
 		.editor-status {
-			height: 2rem;
+			
+			background-color: hsl(215, 23%, 82%);
+			height: 1rem;
 			width: 100%;
-			border: 2px solid red;
+			color : darkslategray;
 			margin-top: auto;
 			align-self: end;
+			p{
+				margin: 0;
+				padding: 0;
+				float: right;
+			}
 		}
 	}
 }
