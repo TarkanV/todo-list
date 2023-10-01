@@ -117,39 +117,52 @@
 
         <template id="template-note">
           <li class="note" tabindex="0" data-id="-1">
-            <div class="note-details">
-              <div class="note-details-text">
-                <h3 class="note-name">Gender equal bathrooms</h3>
-                <div class="note-content">Made the boys room gender inclusive and removed urinals but without adding
-                  more stalls.</div>
+            <div class="note-main">
+              <div class="note-details">
+                <div class="note-details-text">
+                  <h3 class="note-name">Gender equal bathrooms</h3>
+                  <div class="note-content">Made the boys room gender inclusive and removed urinals but without adding
+                    more stalls.</div>
+                </div>
+                <div class="note-date">Today</div>
               </div>
-              <div class="note-date">Today</div>
+              <div class="note-icon"></div>
             </div>
-            <div class="note-icon">
-              <div>
-              </div>
           </li>
         </template>
 
         <template id="template-todo">
           <li class="note todo" tabindex="0" data-id="-1">
-            <div class="note-details">
-              <div class="note-details-text">
-                <div class="todo-top">
-
-                  <div class="note-check"><img src="./img/task-status.svg"></div>
-                  <h3 class="note-name">Gender equal bathrooms</h3>
+            <div class="note-main">
+              <div class="note-details">
+                <div class="note-details-text">
+                  <div class="todo-top">
+                    <div class="note-check"><img src="./img/task-status.svg"></div>
+                    <h3 class="note-name">Gender equal bathrooms</h3>
+                  </div>
+                  <div class="note-content">Made the boys room gender inclusive and removed urinals but without adding
+                    more stalls.</div>
                 </div>
-                <div class="note-content">Made the boys room gender inclusive and removed urinals but without adding
-                  more stalls.</div>
+                <div class="note-status">Today</div>
               </div>
-              <div class="note-status">Today</div>
+              <div class="note-icon"></div>      
             </div>
-            <div class="note-icon">
-              <div>
-              </div>
+            <ul class="task-list">
+             
+            </ul>
+              
           </li>
         </template>
+        <template id="template-task">
+            <div class="task" data-id="-1">
+              <label>
+                <input type="checkbox" class="task-check">
+                <div class="task-content"></div>
+              </label>
+              
+            </div>
+        </template>  
+        
 
 
       </div>
@@ -161,6 +174,13 @@
           <div class="editor-content">
             <input class="editor-note-name">
             <div contenteditable="true" class="editor-text"></div>
+            <template id="template-editor-task">
+              <div class="editor-task" data-id="-1">
+                <input type="radio" class="editor-task-check">
+                <div contenteditable="true" class="editor-task-content"></div>
+                <button class="editor-task-delete">X</button>
+              </div>
+            </template>
           </div>
           <div class="editor-status">
             <p>Last Saved : 10th Augst 2023</p>

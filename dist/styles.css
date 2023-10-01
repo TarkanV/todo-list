@@ -286,46 +286,49 @@ body {
   scrollbar-color: hsl(212, 57%, 61%) #c2d2e4;
   scrollbar-width: thin;
 }
-.opened-book .note {
+.opened-book .task-list .task, .opened-book .note-main, .opened-book .todo-main {
   cursor: pointer;
   user-select: none;
   background-color: hsl(210, 15%, 85%);
   border: 1px solid hsl(210, 10%, 60%);
   box-shadow: 0 2px 4px hsl(210, 10%, 20%);
   border-radius: 5px;
-  flex: 0 0 auto;
   display: flex;
-  justify-content: space-between;
   list-style: none;
   padding: 0.5rem;
   margin: 0.3rem 0.2rem;
   height: 95px;
   position: relative;
 }
-.opened-book .note .note-details-text {
+.opened-book .note-main, .opened-book .todo-main {
+  flex: 0 0 auto;
+  justify-content: space-between;
+}
+.opened-book .note-main .note-details-text, .opened-book .todo-main .note-details-text {
   overflow: hidden;
   max-height: 5rem;
 }
-.opened-book .note h3 {
+.opened-book .note-main h3, .opened-book .todo-main h3 {
   margin: 0;
 }
-.opened-book .note .note-icon {
+.opened-book .note-main .note-icon, .opened-book .todo-main .note-icon {
   /*background-color: lightpink; width: 95px; height: 95px;*/
 }
 @media (max-width: 800px) {
-  .opened-book .note .note-icon {
+  .opened-book .note-main .note-icon, .opened-book .todo-main .note-icon {
     display: none;
   }
 }
-.opened-book .note .note-date,
-.opened-book .note .note-status {
+.opened-book .note-main .note-date,
+.opened-book .note-main .note-status, .opened-book .todo-main .note-date,
+.opened-book .todo-main .note-status {
   position: absolute;
   bottom: 0.2rem;
 }
-.opened-book .note:focus {
+.opened-book .note:focus > .note-main {
   outline: 4px solid hsl(200, 15%, 38%);
 }
-.opened-book .note.deleting {
+.opened-book .note.deleting .note-main {
   background-color: red;
   height: 0;
   padding: 0;
@@ -333,7 +336,7 @@ body {
   transition: 0.3s;
   overflow: hidden;
 }
-.opened-book .note.deleting > * {
+.opened-book .note.deleting .note-main > * {
   opacity: 0;
   transition: 0.3s;
 }
@@ -364,15 +367,70 @@ body {
 .opened-book .todo .todo-top {
   display: flex;
 }
+.opened-book .task-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: 0.5s;
+}
+.opened-book .task-list.visible {
+  max-height: 1200px;
+  overflow: auto;
+  transition: 0.5s;
+}
+.opened-book .task-list .task {
+  height: 1.5rem;
+  display: grid;
+  grid-template-columns: min-content max-content 1fr;
+  align-items: center;
+}
+.opened-book .task-list .task label {
+  display: contents;
+}
+.opened-book .task-list .task input.task-check {
+  margin-right: 0.5rem;
+}
+.opened-book .task-list .task .task-delete {
+  justify-self: end;
+  align-self: center;
+  padding: 0 0;
+}
+.opened-book .task-list .task input.task-check {
+  appearance: none;
+  position: relative;
+  height: 1rem;
+  width: 1rem;
+}
+.opened-book .task-list .task input.task-check:before {
+  content: "";
+  position: absolute;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 100%;
+  background-color: white;
+  outline: 2px dotted gray;
+}
+.opened-book .task-list .task input.task-check::after {
+  content: "";
+  position: absolute;
+  height: 1rem;
+  width: 1rem;
+  scale: 90%;
+  border-radius: 100%;
+  background-color: white;
+}
+.opened-book .task-list .task input.task-check:checked::after {
+  background-color: cornflowerblue;
+}
 
 .editor {
   max-width: 0;
+  overflow: hidden;
   background-color: hsl(215, 20%, 86%);
-  transition-duration: 0.3s;
+  transition-duration: 0.5s;
 }
 .editor.visible {
-  max-width: unset;
-  transition-duration: 0.3s;
+  max-width: 1500px;
+  transition-duration: 0.5s;
 }
 .editor .note-editor {
   width: 100%;
@@ -407,9 +465,11 @@ body {
   font-size: 1rem;
 }
 .editor .note-editor .editor-status {
+  overflow: hidden;
   background-color: hsl(215, 23%, 82%);
   height: 1rem;
   width: 100%;
+  padding: 0.5rem 0.1rem;
   color: darkslategray;
   margin-top: auto;
   align-self: end;

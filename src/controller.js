@@ -24,8 +24,13 @@ book1.makeNote("Whispers in the Wind", "Mysteries unfold with every breeze in a 
 myBook.makeNote("Great Sailor", "The great sailor was a well known sailor who has conquered all the seas.");
 let todo = myBook.makeTodo("Workout Time", `- Do 10 pushups 
 - Eat healthy`, fns.add(new Date(), {days: 0, seconds: 15,}));
-myBook.makeTodo("Red Light Therapy", "- Sit Still \n - Read Big Book \n - Deage :v", fns.add(new Date(), {days: 0, minutes: 10,}));
-
+const redLight = myBook.makeTodo("Red Light Therapy", "The Good Stuff", fns.add(new Date(), {days: 0, minutes: 10,}));
+redLight.makeTask("Read Book");
+redLight.makeTask("Meditate");
+redLight.makeTask("Feel entitled");
+const toastTodo  = myBook.makeTodo("Workout Ting", "Program", fns.add(new Date(),{days : 2}));
+toastTodo.makeTask("100 push-ups");
+toastTodo.makeTask("100 sit-ups");
 myBook.makeNote("Chronicles of the Celestial Pirate", "A spacefaring rogue seeks treasure beyond the stars.");
 myBook.makeNote("The Alchemist's Daughter", "Potions, destiny, and the power of a hidden lineage.");
 myBook.makeNote("Eclipse of Empires", "Worlds collide as empires clash under an ancient prophecy.");
@@ -92,8 +97,18 @@ const controller = (function(){
         
         return status;
     }
+
     const getTodoStatus = function(noteID){
         const todo = model.getSelectedNoteFromID(noteID);
+        return todo.getStatus();
+    }
+
+    const handleTaskCheck = function(taskID, taskChecked){
+        const todo = model.selectedNote;
+        const task = todo.getTaskFromID(taskID);
+        console.log(task);
+        task.checked = taskChecked;
+        todo.updateTasksStatus();
         return todo.getStatus();
     }
 
@@ -111,6 +126,7 @@ const controller = (function(){
         view.catchAddNote(handleAddNote);
         view.catchNoteEdition(handleSaveNote);
         view.catchDeleteNote(handleDeleteNote);
+        view.catchTaskCheck(handleTaskCheck);
         
     }
     return{
@@ -124,7 +140,7 @@ const controller = (function(){
 controller.loadAllBooks();
 controller.handleBookEvents();
 controller.handleNoteEvents();
-controller.loadDefaultBook(myBook);
+controller.loadDefaultBook(model.defaultTodos);
 
 
 document.addEventListener("keyup", (e) =>{

@@ -2,6 +2,7 @@ const view = (function(){
     const templateBook = document.querySelector("#template-folder"); 
     const templateNote = document.querySelector("#template-note");
     const templateTodo = document.querySelector("#template-todo");
+    const templateTask = document.querySelector("#template-task");
     const defaultBookNode = document.querySelector(".memobooks");
     const hierarchyNode = document.querySelector(".hierarchy");
     const bookNodeList = [];
@@ -40,7 +41,7 @@ const view = (function(){
     }
     const updateBookContentStatus = function(bookNode){
         const hasSubFolders = bookNode.querySelector(".list").childNodes.length;
-        console.log("Name : " + bookNode.querySelector(".folder-title-text").value + " Subs : " +  hasSubFolders);
+       
         if(!hasSubFolders) 
             bookNode.classList.add("empty");
         else bookNode.classList.remove("empty");
@@ -57,7 +58,7 @@ const view = (function(){
             closeOldFolderMore();
 
             if(e.target.closest(".show-folder-more")){
-                console.log("Something is happening here.");
+                
                 const folderMore = e.target.closest(".show-folder-more").nextElementSibling;
                 folderMore.classList.toggle("visible");
             }
@@ -124,7 +125,7 @@ const view = (function(){
     }
     
     const showHierarchy = function(holder, depth = 0){
-        console.log("- ".repeat(depth) + holder.name);
+        
         if(holder.children && holder.children.length){   
             holder.children.forEach(child =>{
                 showHierarchy(child, depth + 1);
@@ -137,7 +138,7 @@ const view = (function(){
         
         hierarchyNode.addEventListener("click", (e)=>{
             if(e.target.closest(".expand-icon")){
-                console.log("EXPAND");
+                
                 e.stopPropagation();
                 const bookNode = e.target.parentNode.parentNode;
                 bookNode.classList.toggle("collapsed");
@@ -206,6 +207,13 @@ const view = (function(){
         todoNode.querySelector(".note-name").textContent = todo.name;
         todoNode.querySelector(".note-content").textContent = todo.content;
         todoNode.querySelector(".note-status").textContent = todo.getStatus();
+        todo.tasks.forEach((task) =>{
+            const taskListNode = todoNode.querySelector(".task-list");
+            const taskNode = templateTask.content.cloneNode(true).firstElementChild;
+            taskNode.dataset.id = task.id;
+            taskNode.querySelector(".task-content").textContent = task.content;
+            taskListNode.appendChild(taskNode);
+        })
         todoNode.dataset.id = todo.id;
         
         return todoNode;
@@ -220,17 +228,26 @@ const view = (function(){
 
     const catchSelectedNote = function(handler){
         openedBookNode.addEventListener("click", (e) =>{
+            const prevSelectedNoteNode = selectedNoteNode;
             if(e.target.closest(".note")){
                 const noteNode = e.target.closest(".note");
                 selectedNoteNode = noteNode;
                 const note = handler(noteNode.dataset.id);
+            }
+            if(e.target.closest(".todo")){
+                selectedNoteNode.querySelector(".task-list").classList.add("visible");
+            }
+            if(prevSelectedNoteNode && prevSelectedNoteNode != selectedNoteNode &&
+                prevSelectedNoteNode.querySelector(".task-list")){
+                prevSelectedNoteNode.querySelector(".task-list").classList.remove("visible");
             }
         });
         
     };
     const catchOpenedNote = function(handler){
         openedBookNode.addEventListener("dblclick", (e) =>{
-            if(e.target.closest(".note")){
+            if(e.target.closest(".note-main") || e.target.closest(".todo-main")){
+                console.log("CLOSEST");
                 const noteNode = e.target.closest(".note");
                 selectedNoteNode = noteNode;
                 const note = handler(noteNode.dataset.id);
@@ -244,6 +261,9 @@ const view = (function(){
             if(e.target.closest(".add-note")){
                 const {newNote, selectedBook} = handler(); 
                 loadBookNotes(selectedBook);
+                selectedNoteNode = noteListNode.childNodes[1];
+                console.log(selectedNoteNode.querySelector(".note-name").textContent);
+
                 setEditNote(newNote);
                 noteListNode.scrollTop = -noteListNode.scrollHeight;
             }
@@ -259,7 +279,7 @@ const view = (function(){
     }
     const catchNoteEdition = function(noteSaver){
         editorNode.addEventListener("input", (e)=>{
-        console.log("Note has been edited");
+        
         editorStatus.textContent = "Saving...";
 
         clearTimeout(saveNoteDelay); 
@@ -280,19 +300,20 @@ const view = (function(){
     const catchDeleteNote = function(handler){
         let transition = false;
         openedBookNode.addEventListener("click", (e)=>{
-            
+            console.log("Selected Note Node : ")
+            console.log(selectedNoteNode);
             if(e.target.closest(".file-delete") && selectedNoteNode && !transition){
                 
             
-                console.log("Something");
+                console.log("Deleting Process");
                 selectedNoteNode.classList.toggle("deleting");
                 transition = true;
                 selectedNoteNode.addEventListener("transitionend", (e) => {
                     
                     if(e.propertyName == "height"){
                         handler(selectedNoteNode.dataset.id);   
-                        selectedNoteNode = e.target.nextElementSibling;   
-                        e.target.remove();
+                        selectedNoteNode = e.target.parentNode.nextElementSibling;   
+                        e.target.parentNode.remove();
                         
                         editorNode.classList.remove("visible");   
                         transition = false;
@@ -316,6 +337,14 @@ const view = (function(){
                 
                 statusNode.textContent = status;
                 todoNode.classList.toggle("checked");
+                if(status != "Done"){
+                   const taskCheckNodes = todoNode.querySelectorAll(".task-check");
+                    taskCheckNodes.forEach((checkNode) => checkNode.checked = false);
+                }
+                else{
+                    const taskCheckNodes = todoNode.querySelectorAll(".task-check");
+                    taskCheckNodes.forEach((checkNode) => checkNode.checked = true); 
+                }
                 
             }
         });
@@ -332,6 +361,26 @@ const view = (function(){
         }, seconds * 1000);
             
     }
+
+    const catchTaskCheck = function(handler){
+        openedBookNode.addEventListener("click", (e) =>{
+            if(e.target.closest("input.task-check")){
+                const taskCheckNode = e.target.closest(".task-check");
+                const taskNode = taskCheckNode.parentNode.parentNode;
+                const todoStatus = handler(taskNode.dataset.id, taskCheckNode.checked);
+                if(todoStatus == "Done"){
+                    selectedNoteNode.querySelector(".note-status").textContent = todoStatus;
+                    selectedNoteNode.classList.add("checked");
+                }
+                else{
+                    selectedNoteNode.querySelector(".note-status").textContent = todoStatus;
+                    selectedNoteNode.classList.remove("checked");  
+                }
+            }
+        })
+    }
+
+    
 
     
 
@@ -355,6 +404,7 @@ const view = (function(){
         catchDeleteNote,
         catchTodoCheck,
         watchTodoStatus,
+        catchTaskCheck,
         setBookCollapsing,
         enableEditBookName,
         setEditBookName,

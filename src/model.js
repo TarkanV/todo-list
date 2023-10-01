@@ -93,6 +93,7 @@ const model = (function(){
     let openedBook;
     let focusBook;
     let openedNote;
+    let selectedNote;
 
     const getBookFromID = function(bookID){
         return bookList.find(book => book.id == bookID);  
@@ -108,7 +109,8 @@ const model = (function(){
     }
     const getSelectedNoteFromID = function(selectedNoteID){
         //console.log(`Opened Book : ${openedBook.name}`);    
-        return getBookNoteFromID(openedBook.id, selectedNoteID);
+        selectedNote = getBookNoteFromID(openedBook.id, selectedNoteID);
+        return selectedNote;
     }
     const getOpenedNoteFromID = function(openedNoteID) {
         openedNote = getBookNoteFromID(openedBook.id, openedNoteID);
@@ -164,18 +166,35 @@ const model = (function(){
     }
 
     const makeTodo = function(name, content = "", dueDate, status = "Ongoing"){
-        const tasks = [];
-        const addTask = function(content){
-            tasks.push({
-                content,
-                checked : false,
-            });
-        }
-
-        const removeTask = function(content){
-            tasks.splice(tasks.indexOf(content), 1);
-        } 
         
+        //Task Stuff
+        let refTaskID = -1;
+
+        const tasks = [];
+        
+        const makeTask = function(content){
+            ++refTaskID;
+            let _checked = false;
+            const task = {
+                id: refTaskID,
+                content,
+                set checked(value){_checked = value},
+                get checked(){return _checked},
+            }
+            tasks.push(task);
+            return task;
+        }
+        const getTaskFromID = function(id){
+            const taskIDX = tasks.findIndex((task) => task.id == id);
+            return tasks[taskIDX];
+        }
+        const removeTask = function(id){
+            const delTaskID = tasks.findIndex((task) => task.id == id);
+            tasks.splice(delTaskID, 1);
+        } 
+        //END 
+
+
         const getStatus = function(){
             if(status != "Done"){
                 let daysLeft = fns.differenceInCalendarDays(dueDate, new Date());
@@ -209,12 +228,8 @@ const model = (function(){
         }
 
         const updateTasksStatus = function(){
-            tasks.forEach(task =>{
-                if(!task.checked){
-                    return;
-                }
-            })
-            status = "Done";
+            if(!tasks.find(task => (!task.checked))) status = "Done";
+            else {status = "Ongoing"; status = getStatus()};
         }
 
         const switchStatus = function(){
@@ -229,9 +244,6 @@ const model = (function(){
                 tasks.forEach(task => task.checked = false);
             }
             return status;
-           
-        
-
         } 
     
         const todo = {
@@ -242,7 +254,8 @@ const model = (function(){
             updateTasksStatus,
             switchStatus,
             tasks,
-            addTask,
+            makeTask,
+            getTaskFromID,
             removeTask,
             getType : ()  => "todo",
         };
@@ -265,6 +278,7 @@ const model = (function(){
         setOpenedBook,
         get openedBook(){ return openedBook},
         get openedNote(){ return openedNote},
+        get selectedNote(){ return selectedNote},
         focusBook,
         getBookFromID,
         getOpenedBookFromID,
