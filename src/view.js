@@ -3,6 +3,7 @@ const view = (function(){
     const templateNote = document.querySelector("#template-note");
     const templateTodo = document.querySelector("#template-todo");
     const templateTask = document.querySelector("#template-task");
+    const templateEditTask = document.querySelector("#template-editor-task");
     const defaultBookNode = document.querySelector(".memobooks");
     const hierarchyNode = document.querySelector(".hierarchy");
     const bookNodeList = [];
@@ -14,12 +15,17 @@ const view = (function(){
     let openedNoteNode;
     const editorNode = document.querySelector(".editor");
     const editorStatus = document.querySelector(".editor-status > p");
+    const editorTaskListNode =  editorNode.querySelector(".editor-task-list");
     let saveNoteDelay;
     const bindAddBook = function(bookNode){
         bookNode.addEventListener("click", () => {
 
         });
     };
+
+    const removeNodeChildren = function(node){
+        while(node.firstElementChild) node.removeChild(node.firstElementChild);
+    }
 
     // Book methods
 
@@ -170,12 +176,12 @@ const view = (function(){
     }
 
 
-
+    
     // Notes methods
     const loadBookNotes = function(selectedBook){
         //const bookNodeID = selectedBookNode.dataset.id; 
         
-        while(noteListNode.firstElementChild) noteListNode.removeChild(noteListNode.firstElementChild);
+        removeNodeChildren(noteListNode);
         
         openedBookNode.querySelector(".opened-book-title > h2").textContent = selectedBook.name;
         
@@ -190,6 +196,9 @@ const view = (function(){
         openedBookNode.dataset.id = selectedBook.id;
     }
 
+
+
+    //Editor Part
     const loadNote = function(note){
         const noteNode = templateNote.content.cloneNode(true).firstElementChild;
         noteNode.querySelector(".note-name").textContent = note.name;
@@ -206,25 +215,69 @@ const view = (function(){
         const todoNode = templateTodo.content.cloneNode(true).firstElementChild;
         todoNode.querySelector(".note-name").textContent = todo.name;
         todoNode.querySelector(".note-content").textContent = todo.content;
-        todoNode.querySelector(".note-status").textContent = todo.getStatus();
+        todoNode.querySelector(".note-status").textContent = todo.getStatus();  
+        console.log("Status = " + todo.getStatus());
+        if(todo.getStatus() == "Done"){
+            console.log("Loaded");
+            todoNode.classList.add("checked");
+        }
         todo.tasks.forEach((task) =>{
             const taskListNode = todoNode.querySelector(".task-list");
             const taskNode = templateTask.content.cloneNode(true).firstElementChild;
             taskNode.dataset.id = task.id;
             taskNode.querySelector(".task-content").textContent = task.content;
+            taskNode.querySelector(".task-check").checked = task.checked;
             taskListNode.appendChild(taskNode);
         })
         todoNode.dataset.id = todo.id;
         
         return todoNode;
     }
-    const setEditNote = function(note){
+    const loadEditTask = function(task){
+            const taskNode = templateEditTask.content.cloneNode(true).firstElementChild;
+            taskNode.dataset.id = task.id;
+            taskNode.querySelector(".editor-task-content").textContent = task.content;
+            editorTaskListNode.appendChild(taskNode);
+    }
+    const loadEditTasks = function(todo){
+        todo.tasks.forEach((task) =>{
+            loadEditTask(task);
+        });
+        }
+    const loadEditNote = function(note){
+        const noteType = note.getType();
+        removeNodeChildren(editorTaskListNode);
+        if(noteType == "todo"){
+            editorNode.classList.add("edit-todo");
+            loadEditTasks(note);         
+        }
+        else editorNode.classList.remove("edit-todo");
+
         editorNode.querySelector(".editor-note-name").value = note.name;
         editorNode.querySelector(".editor-text").textContent = note.content;
         editorNode.dataset.id = note.id;
         editorNode.classList.add("visible");
         openedNoteNode = selectedNoteNode;
     }
+
+    const catchAddTask = function(handler){
+        editorNode.addEventListener("click", (e)=>{
+            if(e.target.closest(".add-task")){
+                const newTask = handler();
+                loadEditTask(newTask);         
+            }
+        })
+    }
+    const catchDeleteTask = function(handler){
+        editorNode.addEventListener("click", (e) =>{
+            if(e.target.closest(".editor-task-delete")){
+                const taskNode = e.target.closest(".editor-task-delete").parentNode;
+                handler(taskNode.id);
+            }
+        })
+    }
+
+    //END
 
     const catchSelectedNote = function(handler){
         openedBookNode.addEventListener("click", (e) =>{
@@ -251,7 +304,7 @@ const view = (function(){
                 const noteNode = e.target.closest(".note");
                 selectedNoteNode = noteNode;
                 const note = handler(noteNode.dataset.id);
-                setEditNote(note);          
+                loadEditNote(note);          
             }
         });
     }
@@ -264,7 +317,7 @@ const view = (function(){
                 selectedNoteNode = noteListNode.childNodes[1];
                 console.log(selectedNoteNode.querySelector(".note-name").textContent);
 
-                setEditNote(newNote);
+                loadEditNote(newNote);
                 noteListNode.scrollTop = -noteListNode.scrollHeight;
             }
             const moreOption = (function(){
@@ -277,6 +330,9 @@ const view = (function(){
         });
         
     }
+
+
+
     const catchNoteEdition = function(noteSaver){
         editorNode.addEventListener("input", (e)=>{
         
@@ -287,15 +343,25 @@ const view = (function(){
         saveNoteDelay = setTimeout(()=>{
             const newNoteName = editorNode.querySelector(".editor-note-name").value;
             const newNoteContent = editorNode.querySelector(".editor-text").textContent;
-            noteSaver(newNoteName, newNoteContent);
+            const newTaskContentList = [];
+            editorTaskListNode.childNodes.forEach(taskNode =>{
+                if(taskNode.querySelector){
+                    const content = taskNode.querySelector(".editor-task-content").textContent;
+                    newTaskContentList.push(content);
+                }
+            })
+            
+            noteSaver(newNoteName, newNoteContent, newTaskContentList);
             editorStatus.textContent = "Note Saved!";
         
-        },1500
+        },1000
         );
 
         });
     }
-  
+
+    
+
 
     const catchDeleteNote = function(handler){
         let transition = false;
@@ -379,6 +445,7 @@ const view = (function(){
             }
         })
     }
+    
 
     
 
@@ -397,6 +464,9 @@ const view = (function(){
         loadBookHierarchy,
         setOpenedBook,
         loadBookNotes,
+        loadEditNote,
+        catchAddTask,
+        catchDeleteTask,
         catchSelectedNote,
         catchOpenedNote,
         catchAddNote,

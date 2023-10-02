@@ -188,7 +188,7 @@ const model = (function(){
             const taskIDX = tasks.findIndex((task) => task.id == id);
             return tasks[taskIDX];
         }
-        const removeTask = function(id){
+        const removeTaskFromID = function(id){
             const delTaskID = tasks.findIndex((task) => task.id == id);
             tasks.splice(delTaskID, 1);
         } 
@@ -256,7 +256,7 @@ const model = (function(){
             tasks,
             makeTask,
             getTaskFromID,
-            removeTask,
+            removeTaskFromID,
             getType : ()  => "todo",
         };
 

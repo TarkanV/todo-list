@@ -268,6 +268,21 @@ body {
 	}
 }
 
+%opened-box{
+	cursor: pointer;
+	user-select: none;
+	background-color: hsl(210, 15%, 85%);
+	border: 1px solid hsl(210, 10%, 60%);
+	box-shadow: 0 2px 4px hsl(210, 10%, 20%);
+	border-radius: 5px;
+	display: flex;
+	list-style: none;
+	padding: 0.5rem;
+	margin: 0.3rem 0.2rem;
+	height: 95px;
+	position: relative;
+}
+
 .opened-book {
 	z-index: 3;
 	background-color: hsl(215, 20%, 80%);
@@ -325,20 +340,7 @@ body {
 		scrollbar-width: thin;
 	}
 
-	%opened-box{
-		cursor: pointer;
-		user-select: none;
-		background-color: hsl(210, 15%, 85%);
-		border: 1px solid hsl(210, 10%, 60%);
-		box-shadow: 0 2px 4px hsl(210, 10%, 20%);
-		border-radius: 5px;
-		display: flex;
-		list-style: none;
-		padding: 0.5rem;
-		margin: 0.3rem 0.2rem;
-		height: 95px;
-		position: relative;
-	}
+	
 
 	.note-main, .todo-main {
 		@extend %opened-box;
@@ -498,6 +500,8 @@ body {
 		max-width: 1500px;	
 		transition-duration: 0.5s;
 	}
+
+	
 	.note-editor {
 		width: 100%;
 		height: 100%;
@@ -509,6 +513,10 @@ body {
 			width: 100%;
 			height: 1.5rem;
 			background-color: hsl(215, 10%, 90%);
+			padding: 0.3rem 0.6rem;
+			.add-task{
+				display: none;
+			}
 		}
 
 		.editor-content {
@@ -553,7 +561,46 @@ body {
 	}
 }
 
+.editor.edit-todo{
+	.note-editor{
+		.editor-tools{
+			.add-task{
+				display: inline-block;
+				border-radius: 100%;
+				border : none;
+				padding: 0;
+				cursor: pointer;
+			}
+		}
+		.editor-text{
+			background-color: hsl(215, 10%, 86%);
+		}
+		.editor-task{
+			display: grid;
+			grid-template-columns: 1fr min-content;
+			.editor-task-content{
+				@extend %opened-box;
+				height : auto;	
+				box-shadow: none;
+			}
+			.editor-task-delete{
+				background-color: inherit;
+				&:hover{
+					opacity: 60%;
+				}
+				border : none;
+				padding: 0;
+				cursor: pointer;
+			}
+		}
+	}
+	
+	
+
+}
+
 .dialog {
 	position: absolute;
 	display: none;
+
 }

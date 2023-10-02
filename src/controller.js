@@ -80,9 +80,16 @@ const controller = (function(){
         return {newNote : newNote, selectedBook: model.openedBook};
     }
 
-    const handleSaveNote = function(newNoteName, newNoteContent){
+    const handleSaveNote = function(newNoteName, newNoteContent, newTaskContentList){
         model.openedNote.name = newNoteName;
         model.openedNote.content = newNoteContent;
+        if(model.openedNote.getType() == "todo"){
+            const tasks = model.openedNote.tasks;
+            console.log(`Task Lgt : ${tasks.length}`);
+            tasks.forEach((task) =>{
+                task.content = newTaskContentList[tasks.indexOf(task)];
+            });     
+        }
         view.loadBookNotes(model.openedBook);   
     }
 
@@ -112,6 +119,20 @@ const controller = (function(){
         return todo.getStatus();
     }
 
+    const handleAddTask = function(){
+        const todo = model.openedNote;
+        const task = todo.makeTask("New Task");
+        todo.updateTasksStatus();
+        todo.getStatus();
+        return task;
+    }
+    const handleDeleteTask = function(taskID){
+        const todo = model.openedNote;
+        todo.removeTaskFromID(taskID);
+        view.loadEditNote(todo);
+        view.loadBookNotes(model.openedBook);
+    }
+
     const handleBookEvents = function(){
         view.setBookCollapsing();
         view.setOpenedBook(model.getOpenedBookFromID);
@@ -127,6 +148,8 @@ const controller = (function(){
         view.catchNoteEdition(handleSaveNote);
         view.catchDeleteNote(handleDeleteNote);
         view.catchTaskCheck(handleTaskCheck);
+        view.catchAddTask(handleAddTask);
+        view.catchDeleteTask(handleDeleteTask);
         
     }
     return{
