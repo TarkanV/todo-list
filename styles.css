@@ -238,6 +238,21 @@ body {
   overflow: hidden;
 }
 
+.editor.edit-todo .note-editor .editor-task .editor-task-content, .opened-book .task-list .task, .opened-book .note-main, .opened-book .todo-main {
+  cursor: pointer;
+  user-select: none;
+  background-color: hsl(210, 15%, 85%);
+  border: 1px solid hsl(210, 10%, 60%);
+  box-shadow: 0 2px 4px hsl(210, 10%, 20%);
+  border-radius: 5px;
+  display: flex;
+  list-style: none;
+  padding: 0.5rem;
+  margin: 0.3rem 0.2rem;
+  height: 95px;
+  position: relative;
+}
+
 .opened-book {
   z-index: 3;
   background-color: hsl(215, 20%, 80%);
@@ -285,20 +300,6 @@ body {
   overflow-y: scroll;
   scrollbar-color: hsl(212, 57%, 61%) #c2d2e4;
   scrollbar-width: thin;
-}
-.opened-book .task-list .task, .opened-book .note-main, .opened-book .todo-main {
-  cursor: pointer;
-  user-select: none;
-  background-color: hsl(210, 15%, 85%);
-  border: 1px solid hsl(210, 10%, 60%);
-  box-shadow: 0 2px 4px hsl(210, 10%, 20%);
-  border-radius: 5px;
-  display: flex;
-  list-style: none;
-  padding: 0.5rem;
-  margin: 0.3rem 0.2rem;
-  height: 95px;
-  position: relative;
 }
 .opened-book .note-main, .opened-book .todo-main {
   flex: 0 0 auto;
@@ -442,6 +443,10 @@ body {
   width: 100%;
   height: 1.5rem;
   background-color: hsl(215, 10%, 90%);
+  padding: 0.3rem 0.6rem;
+}
+.editor .note-editor .editor-tools .add-task {
+  display: none;
 }
 .editor .note-editor .editor-content {
   margin-top: 2rem;
@@ -478,6 +483,34 @@ body {
   margin: 0;
   padding: 0;
   float: right;
+}
+
+.editor.edit-todo .note-editor .editor-tools .add-task {
+  display: inline-block;
+  border-radius: 100%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.editor.edit-todo .note-editor .editor-text {
+  background-color: hsl(215, 10%, 86%);
+}
+.editor.edit-todo .note-editor .editor-task {
+  display: grid;
+  grid-template-columns: 1fr min-content;
+}
+.editor.edit-todo .note-editor .editor-task .editor-task-content {
+  height: auto;
+  box-shadow: none;
+}
+.editor.edit-todo .note-editor .editor-task .editor-task-delete {
+  background-color: inherit;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.editor.edit-todo .note-editor .editor-task .editor-task-delete:hover {
+  opacity: 60%;
 }
 
 .dialog {
