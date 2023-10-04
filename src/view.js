@@ -249,6 +249,8 @@ const view = (function(){
         removeNodeChildren(editorTaskListNode);
         if(noteType == "todo"){
             editorNode.classList.add("edit-todo");
+            editorNode.querySelector(".duedate").value = note.dueDate.toISOString().slice(0,16);
+            console.log(note.dueDate);
             loadEditTasks(note);         
         }
         else editorNode.classList.remove("edit-todo");
@@ -311,15 +313,17 @@ const view = (function(){
     
     const catchAddNote = function(handler){
         openedBookNode.addEventListener("click", (e)=>{
-            if(e.target.closest(".add-note")){
-                const {newNote, selectedBook} = handler(); 
+            if(e.target.closest(".add-note") || e.target.closest(".add-todo")){
+                let noteType;
+                if(e.target.closest(".add-note")) noteType = "note";
+                else if(e.target.closest(".add-todo")) noteType = "todo";
+                const {newNote, selectedBook} = handler(noteType); 
                 loadBookNotes(selectedBook);
                 selectedNoteNode = noteListNode.childNodes[1];
-                console.log(selectedNoteNode.querySelector(".note-name").textContent);
-
                 loadEditNote(newNote);
                 noteListNode.scrollTop = -noteListNode.scrollHeight;
             }
+            
             const moreOption = (function(){
                 if(e.target.closest(".file-more-button")){
                     const fileMore = e.target.closest(".file-more-button").nextElementSibling;
@@ -350,8 +354,9 @@ const view = (function(){
                     newTaskContentList.push(content);
                 }
             })
+            const newDueDate = editorNode.querySelector(".duedate").value;
             
-            noteSaver(newNoteName, newNoteContent, newTaskContentList);
+            noteSaver(newNoteName, newNoteContent, newTaskContentList, newDueDate);
             editorStatus.textContent = "Note Saved!";
         
         },1000

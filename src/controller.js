@@ -73,22 +73,31 @@ const controller = (function(){
         return Object.assign(note);
     }
     
-    const handleAddNote = function(){
-        const newNote = model.openedBook.makeNote("Untitled Note");
+    const handleAddNote = function(noteType){
+        let newNote;
+        if(noteType == "note")
+            newNote = model.openedBook.makeNote("Untitled Note");
+        else if(noteType == "todo"){
+            newNote = model.openedBook.makeTodo("Untitled Todo", "", fns.add(new Date(), {days : 1}));
+        }
         model.getOpenedNoteFromID(newNote.id);
         model.getSelectedNoteFromID(newNote.id);
         return {newNote : newNote, selectedBook: model.openedBook};
     }
 
-    const handleSaveNote = function(newNoteName, newNoteContent, newTaskContentList){
+    const handleSaveNote = function(newNoteName, newNoteContent, newTaskContentList, newDueDate){
         model.openedNote.name = newNoteName;
         model.openedNote.content = newNoteContent;
         if(model.openedNote.getType() == "todo"){
-            const tasks = model.openedNote.tasks;
+            const todo = model.openedNote;
+            const tasks = todo.tasks;
             console.log(`Task Lgt : ${tasks.length}`);
             tasks.forEach((task) =>{
                 task.content = newTaskContentList[tasks.indexOf(task)];
-            });     
+            });  
+            todo.dueDate = new Date(newDueDate);
+            todo.setStatus();
+            
         }
         view.loadBookNotes(model.openedBook);   
     }

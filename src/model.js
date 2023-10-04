@@ -165,7 +165,7 @@ const model = (function(){
         return note;
     }
 
-    const makeTodo = function(name, content = "", dueDate, status = "Ongoing"){
+    const makeTodo = function(name, content = "", _dueDate, status = "Ongoing"){
         
         //Task Stuff
         let refTaskID = -1;
@@ -194,11 +194,13 @@ const model = (function(){
         } 
         //END 
 
-
+        const setStatus = function(){
+            status = getStatus();
+        }
         const getStatus = function(){
             if(status != "Done"){
-                let daysLeft = fns.differenceInCalendarDays(dueDate, new Date());
-                let secLeft = fns.differenceInSeconds(dueDate, new Date());
+                let daysLeft = fns.differenceInCalendarDays(_dueDate, new Date());
+                let secLeft = fns.differenceInSeconds(_dueDate, new Date());
                 //console.log("Days Left : " + daysLeft);
                 switch(true){
                     case (daysLeft == 0) : 
@@ -209,6 +211,7 @@ const model = (function(){
                     case (daysLeft == 1) : return "Tomorrow"; break;
                     case (daysLeft < 0) : return "Overdue"; break;
                     default : return daysLeft + " days left"; break;
+
                 }
             }
             else return status;
@@ -217,7 +220,7 @@ const model = (function(){
 
         const getPreciseStatus = function(){
             if(status != "Done"){
-                let timeLeft = fns.differenceInSeconds(dueDate, new Date());
+                let timeLeft = fns.differenceInSeconds(_dueDate, new Date());
                 
                 switch(true){        
                     case (timeLeft < 0) : return "Overdue"; break;
@@ -248,7 +251,9 @@ const model = (function(){
     
         const todo = {
             ...noteMix(name, content),
-            dueDate,
+            set dueDate(newDate){_dueDate = newDate},
+            get dueDate(){return _dueDate},
+            setStatus,
             getStatus,
             getPreciseStatus,
             updateTasksStatus,

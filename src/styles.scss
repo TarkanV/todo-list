@@ -2,9 +2,31 @@
 	max-width: 40px;
 	max-height: 40px;
 }
+
+@mixin scrollbar-style($bar-bgc : white, $bar-color: lightgray, $bar-hover : darkgray, $bar-press: gray){
+	&::-webkit-scrollbar{
+		width : 8px;
+		
+		background-color: $bar-bgc;
+	}
+	
+	&::-webkit-scrollbar-thumb{
+		background-color: $bar-color;
+		&:hover{
+			background-color: $bar-hover;
+		}
+		&:active{
+			background-color: $bar-press;
+		}
+	}
+}
+
 :root {
 	scrollbar-width: thin;
+	@include scrollbar-style;
 }
+
+
 body {
 	margin: 0;
 	font-family: Arial, Helvetica, sans-serif;
@@ -338,6 +360,8 @@ body {
 		overflow-y: scroll;
 		scrollbar-color: hsl(212, 57%, 61%) #c2d2e4;
 		scrollbar-width: thin;
+		@include scrollbar-style(#c2d2e4, hsl(212, 57%, 61%), 
+		 hsl(212, 57%, 51%),  hsl(212, 57%, 41%))
 	}
 
 	
@@ -517,6 +541,9 @@ body {
 			.add-task{
 				display: none;
 			}
+			.show-duedate, .duedate{
+				display: none;
+			}
 		}
 
 		.editor-content {
@@ -564,12 +591,30 @@ body {
 .editor.edit-todo{
 	.note-editor{
 		.editor-tools{
+			display: flex;
+			align-items: center;
 			.add-task{
 				display: inline-block;
 				border-radius: 100%;
 				border : none;
 				padding: 0;
 				cursor: pointer;
+			}
+			.show-duedate{
+				display: inline-block;
+				position: relative;
+				appearance: none;
+				width: 24px;
+				height: 26.4px;
+				&::before{
+					position: absolute;
+					content: url("./img/edit-delay.svg");
+					min-width: auto;
+					min-height: auto;
+				}
+				&:checked + .duedate{
+					display : inline-block;
+				}
 			}
 		}
 		.editor-text{
