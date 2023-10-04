@@ -6,6 +6,19 @@
 :root {
   scrollbar-width: thin;
 }
+:root::-webkit-scrollbar {
+  width: 8px;
+  background-color: white;
+}
+:root::-webkit-scrollbar-thumb {
+  background-color: lightgray;
+}
+:root::-webkit-scrollbar-thumb:hover {
+  background-color: darkgray;
+}
+:root::-webkit-scrollbar-thumb:active {
+  background-color: gray;
+}
 
 body {
   margin: 0;
@@ -301,6 +314,19 @@ body {
   scrollbar-color: hsl(212, 57%, 61%) #c2d2e4;
   scrollbar-width: thin;
 }
+.opened-book .note-list::-webkit-scrollbar {
+  width: 8px;
+  background-color: #c2d2e4;
+}
+.opened-book .note-list::-webkit-scrollbar-thumb {
+  background-color: hsl(212, 57%, 61%);
+}
+.opened-book .note-list::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(212, 57%, 51%);
+}
+.opened-book .note-list::-webkit-scrollbar-thumb:active {
+  background-color: hsl(212, 57%, 41%);
+}
 .opened-book .note-main, .opened-book .todo-main {
   flex: 0 0 auto;
   justify-content: space-between;
@@ -448,6 +474,9 @@ body {
 .editor .note-editor .editor-tools .add-task {
   display: none;
 }
+.editor .note-editor .editor-tools .show-duedate, .editor .note-editor .editor-tools .duedate {
+  display: none;
+}
 .editor .note-editor .editor-content {
   margin-top: 2rem;
   padding: 0 1rem;
@@ -485,12 +514,32 @@ body {
   float: right;
 }
 
+.editor.edit-todo .note-editor .editor-tools {
+  display: flex;
+  align-items: center;
+}
 .editor.edit-todo .note-editor .editor-tools .add-task {
   display: inline-block;
   border-radius: 100%;
   border: none;
   padding: 0;
   cursor: pointer;
+}
+.editor.edit-todo .note-editor .editor-tools .show-duedate {
+  display: inline-block;
+  position: relative;
+  appearance: none;
+  width: 24px;
+  height: 26.4px;
+}
+.editor.edit-todo .note-editor .editor-tools .show-duedate::before {
+  position: absolute;
+  content: url("./img/edit-delay.svg");
+  min-width: auto;
+  min-height: auto;
+}
+.editor.edit-todo .note-editor .editor-tools .show-duedate:checked + .duedate {
+  display: inline-block;
 }
 .editor.edit-todo .note-editor .editor-text {
   background-color: hsl(215, 10%, 86%);
