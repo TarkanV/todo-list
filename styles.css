@@ -349,8 +349,36 @@ body {
 .opened-book .note-main .note-date,
 .opened-book .note-main .note-status, .opened-book .todo-main .note-date,
 .opened-book .todo-main .note-status {
+  width: 100%;
   position: absolute;
   bottom: 0.2rem;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+}
+.opened-book .note-main .note-date .priority,
+.opened-book .note-main .note-status .priority, .opened-book .todo-main .note-date .priority,
+.opened-book .todo-main .note-status .priority {
+  justify-self: end;
+  margin-right: 1.2rem;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 0.3rem 0.5rem;
+}
+.opened-book .note-main .note-date .priority.normal,
+.opened-book .note-main .note-status .priority.normal, .opened-book .todo-main .note-date .priority.normal,
+.opened-book .todo-main .note-status .priority.normal {
+  background-color: hsl(90, 60%, 60%);
+}
+.opened-book .note-main .note-date .priority.high,
+.opened-book .note-main .note-status .priority.high, .opened-book .todo-main .note-date .priority.high,
+.opened-book .todo-main .note-status .priority.high {
+  background-color: hsl(0, 50%, 60%);
+}
+.opened-book .note-main .note-date .priority.low,
+.opened-book .note-main .note-status .priority.low, .opened-book .todo-main .note-date .priority.low,
+.opened-book .todo-main .note-status .priority.low {
+  background-color: hsl(203, 50%, 60%);
 }
 .opened-book .note:focus > .note-main {
   outline: 4px solid hsl(200, 15%, 38%);
@@ -474,7 +502,7 @@ body {
 .editor .note-editor .editor-tools .add-task {
   display: none;
 }
-.editor .note-editor .editor-tools .show-duedate, .editor .note-editor .editor-tools .duedate {
+.editor .note-editor .todo-tools {
   display: none;
 }
 .editor .note-editor .editor-content {
@@ -514,6 +542,16 @@ body {
   float: right;
 }
 
+.editor.edit-todo .note-editor .editor-task .editor-task-delete {
+  background-color: inherit;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.editor.edit-todo .note-editor .editor-task .editor-task-delete:hover {
+  opacity: 60%;
+}
+
 .editor.edit-todo .note-editor .editor-tools {
   display: flex;
   align-items: center;
@@ -525,21 +563,13 @@ body {
   padding: 0;
   cursor: pointer;
 }
-.editor.edit-todo .note-editor .editor-tools .show-duedate {
-  display: inline-block;
-  position: relative;
-  appearance: none;
-  width: 24px;
-  height: 26.4px;
+.editor.edit-todo .note-editor .todo-tools {
+  display: flex;
+  gap: 5px;
 }
-.editor.edit-todo .note-editor .editor-tools .show-duedate::before {
-  position: absolute;
-  content: url("./img/edit-delay.svg");
-  min-width: auto;
-  min-height: auto;
-}
-.editor.edit-todo .note-editor .editor-tools .show-duedate:checked + .duedate {
-  display: inline-block;
+.editor.edit-todo .note-editor .todo-tools .duedate-box div:first-child, .editor.edit-todo .note-editor .todo-tools .priority-box div:first-child {
+  display: flex;
+  align-items: center;
 }
 .editor.edit-todo .note-editor .editor-text {
   background-color: hsl(215, 10%, 86%);
@@ -552,16 +582,6 @@ body {
   height: auto;
   box-shadow: none;
 }
-.editor.edit-todo .note-editor .editor-task .editor-task-delete {
-  background-color: inherit;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-.editor.edit-todo .note-editor .editor-task .editor-task-delete:hover {
-  opacity: 60%;
-}
-
 .dialog {
   position: absolute;
   display: none;
