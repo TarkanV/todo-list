@@ -215,10 +215,15 @@ const view = (function(){
         const todoNode = templateTodo.content.cloneNode(true).firstElementChild;
         todoNode.querySelector(".note-name").textContent = todo.name;
         todoNode.querySelector(".note-content").textContent = todo.content;
-        todoNode.querySelector(".note-status").textContent = todo.getStatus();  
-        console.log("Status = " + todo.getStatus());
+        todoNode.querySelector(".note-status > .duedate").textContent = todo.getStatus();
+        
+        const priorityNode = todoNode.querySelector(".note-status > .priority");
+        priorityNode.textContent = todo.priority; 
+        const priorityClassName = todo.priority[0].toLowerCase() + todo.priority.slice(1);
+        console.log(priorityClassName); 
+        priorityNode.classList.add(priorityClassName);
+        
         if(todo.getStatus() == "Done"){
-            console.log("Loaded");
             todoNode.classList.add("checked");
         }
         todo.tasks.forEach((task) =>{
@@ -249,8 +254,8 @@ const view = (function(){
         removeNodeChildren(editorTaskListNode);
         if(noteType == "todo"){
             editorNode.classList.add("edit-todo");
-            editorNode.querySelector(".duedate").value = note.dueDate.toISOString().slice(0,16);
-            console.log(note.dueDate);
+            editorNode.querySelector(".editor-duedate").value = note.dueDate.toISOString().slice(0,16);
+        
             loadEditTasks(note);         
         }
         else editorNode.classList.remove("edit-todo");
@@ -302,7 +307,7 @@ const view = (function(){
     const catchOpenedNote = function(handler){
         openedBookNode.addEventListener("dblclick", (e) =>{
             if(e.target.closest(".note-main") || e.target.closest(".todo-main")){
-                console.log("CLOSEST");
+            
                 const noteNode = e.target.closest(".note");
                 selectedNoteNode = noteNode;
                 const note = handler(noteNode.dataset.id);
@@ -354,9 +359,17 @@ const view = (function(){
                     newTaskContentList.push(content);
                 }
             })
-            const newDueDate = editorNode.querySelector(".duedate").value;
+            const newDueDate = editorNode.querySelector(".editor-duedate").value;
+            const newPriority = editorNode.querySelector(".editor-priority").value;
+            const saveData = {
+                name : newNoteName,
+                content : newNoteContent,
+                priority : newPriority,
+                taskContentList : newTaskContentList,
+                dueDate : newDueDate,        
+            }
             
-            noteSaver(newNoteName, newNoteContent, newTaskContentList, newDueDate);
+            noteSaver(saveData);
             editorStatus.textContent = "Note Saved!";
         
         },1000
@@ -371,8 +384,7 @@ const view = (function(){
     const catchDeleteNote = function(handler){
         let transition = false;
         openedBookNode.addEventListener("click", (e)=>{
-            console.log("Selected Note Node : ")
-            console.log(selectedNoteNode);
+            
             if(e.target.closest(".file-delete") && selectedNoteNode && !transition){
                 
             
@@ -402,11 +414,11 @@ const view = (function(){
                 e.stopPropagation();
                 
                 const todoNode = e.target.closest(".todo");
-                const statusNode = todoNode.querySelector(".note-status");
+                const dueDateNode = todoNode.querySelector(".note-status > .duedate");
                 const todoID  = todoNode.dataset.id;
                 const status = todoCheckHandler(todoID);
                 
-                statusNode.textContent = status;
+                dueDateNode.textContent = status;
                 todoNode.classList.toggle("checked");
                 if(status != "Done"){
                    const taskCheckNodes = todoNode.querySelectorAll(".task-check");
@@ -427,7 +439,7 @@ const view = (function(){
             const todoNodes = openedBookNode.querySelectorAll(".todo");
             todoNodes.forEach(todoNode => {
                 const todoID = todoNode.dataset.id;
-                todoNode.querySelector(".note-status").textContent = statusGetter(todoID);
+                todoNode.querySelector(".note-status > .duedate").textContent = statusGetter(todoID);
             });
         }, seconds * 1000);
             
@@ -440,11 +452,11 @@ const view = (function(){
                 const taskNode = taskCheckNode.parentNode.parentNode;
                 const todoStatus = handler(taskNode.dataset.id, taskCheckNode.checked);
                 if(todoStatus == "Done"){
-                    selectedNoteNode.querySelector(".note-status").textContent = todoStatus;
+                    selectedNoteNode.querySelector(".note-status > .duedate").textContent = todoStatus;
                     selectedNoteNode.classList.add("checked");
                 }
                 else{
-                    selectedNoteNode.querySelector(".note-status").textContent = todoStatus;
+                    selectedNoteNode.querySelector(".note-status > .duedate").textContent = todoStatus;
                     selectedNoteNode.classList.remove("checked");  
                 }
             }

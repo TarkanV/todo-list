@@ -394,8 +394,28 @@ body {
 
 		.note-date,
 		.note-status {
+			width: 100%;
 			position: absolute;
 			bottom: 0.2rem;
+			display: grid;
+			grid-template-columns: max-content 1fr;
+			align-items: center;
+			.priority{
+				justify-self: end;
+				margin-right : 1.2rem;
+				font-weight: bold;
+				border-radius: 10px;
+				padding: 0.3rem 0.5rem;
+				&.normal{
+					background-color: hsl(90, 60%, 60%);
+				}
+				&.high{
+					background-color: hsl(0, 50%, 60%);
+				}
+				&.low{
+					background-color: hsl(203, 50%, 60%);
+				}
+			}
 		}
 	}
 	.note:focus > .note-main {
@@ -541,11 +561,12 @@ body {
 			.add-task{
 				display: none;
 			}
-			.show-duedate, .duedate{
-				display: none;
-			}
+			
 		}
 
+		.todo-tools{
+			display: none;
+		}
 		.editor-content {
 			margin-top: 2rem;
 			padding: 0 1rem;
@@ -588,7 +609,18 @@ body {
 	}
 }
 
+%button1{
+	background-color: inherit;
+	&:hover{
+		opacity: 60%;
+	}
+	border : none;
+	padding: 0;
+	cursor: pointer;
+}
+
 .editor.edit-todo{
+	
 	.note-editor{
 		.editor-tools{
 			display: flex;
@@ -600,20 +632,18 @@ body {
 				padding: 0;
 				cursor: pointer;
 			}
-			.show-duedate{
-				display: inline-block;
-				position: relative;
-				appearance: none;
-				width: 24px;
-				height: 26.4px;
-				&::before{
-					position: absolute;
-					content: url("./img/edit-delay.svg");
-					min-width: auto;
-					min-height: auto;
-				}
-				&:checked + .duedate{
-					display : inline-block;
+			
+		}
+		.todo-tools{
+			display : flex;
+			gap : 5px;
+
+			
+			.duedate-box, .priority-box{
+				div:first-child{
+					display: flex;
+					align-items: center;
+				
 				}
 			}
 		}
@@ -629,13 +659,7 @@ body {
 				box-shadow: none;
 			}
 			.editor-task-delete{
-				background-color: inherit;
-				&:hover{
-					opacity: 60%;
-				}
-				border : none;
-				padding: 0;
-				cursor: pointer;
+				@extend %button1;
 			}
 		}
 	}

@@ -143,7 +143,10 @@
                   <div class="note-content">Made the boys room gender inclusive and removed urinals but without adding
                     more stalls.</div>
                 </div>
-                <div class="note-status">Today</div>
+                <div class="note-status">
+                  <div class="duedate">Today</div>
+                  <div class="priority">Normal</div>
+                </div>
               </div>
               <div class="note-icon"></div>      
             </div>
@@ -171,8 +174,22 @@
         <div class="note-editor">
           <div class="editor-tools">
             <button class="add-task"><img src="./img/add-circle.svg"></button>
-            <input class="show-duedate" type="checkbox">
-            <input type="datetime-local" class="duedate">
+            
+          </div>
+          <div class="todo-tools">
+            <div class="duedate-box">
+              <div><img src="./img/edit-delay.svg"> Due Date : </div>
+              <input class="editor-duedate" type="datetime-local">
+            </div>
+            
+            <div class="priority-box">
+              <div><img src="./img/priority.svg"> Priority</div>
+              <select class="editor-priority">
+                <option>Low</option>
+                <option>Normal</option>
+                <option>High</option>
+              </select>
+            </div>
           </div>
 
           <div class="editor-content">
@@ -183,7 +200,7 @@
               <template id="template-editor-task">
                 <div class="editor-task" data-id="-1">
                   <div contenteditable="true" class="editor-task-content">Edit this</div>
-                  <button class="editor-task-delete"><img src="./img/delete.svg"></button>
+                  <button class="editor-task-delete" tabindex="-1"><img src="./img/delete.svg"></button>
                 </div>
               </template>
             </ul>

@@ -22,13 +22,14 @@ book1.makeNote("Whispers in the Wind", "Mysteries unfold with every breeze in a 
 
 //Note Sample
 myBook.makeNote("Great Sailor", "The great sailor was a well known sailor who has conquered all the seas.");
-let todo = myBook.makeTodo("Workout Time", `- Do 10 pushups 
-- Eat healthy`, fns.add(new Date(), {days: 0, seconds: 15,}));
-const redLight = myBook.makeTodo("Red Light Therapy", "The Good Stuff", fns.add(new Date(), {days: 0, minutes: 10,}));
+let todo = myBook.makeTodo("Fornite Time", "Play Order", 
+fns.add(new Date(), {days: 0, seconds: 15,}), "Normal");
+const redLight = myBook.makeTodo("Red Light Therapy", "The Good Stuff", 
+fns.add(new Date(), {days: 0, minutes: 10,}), "High");
 redLight.makeTask("Read Book");
 redLight.makeTask("Meditate");
 redLight.makeTask("Feel entitled");
-const toastTodo  = myBook.makeTodo("Workout Ting", "Program", fns.add(new Date(),{days : 2}));
+const toastTodo  = myBook.makeTodo("Workout Ting", "Program", fns.add(new Date(),{days : 2}), "Low");
 toastTodo.makeTask("100 push-ups");
 toastTodo.makeTask("100 sit-ups");
 myBook.makeNote("Chronicles of the Celestial Pirate", "A spacefaring rogue seeks treasure beyond the stars.");
@@ -78,25 +79,26 @@ const controller = (function(){
         if(noteType == "note")
             newNote = model.openedBook.makeNote("Untitled Note");
         else if(noteType == "todo"){
-            newNote = model.openedBook.makeTodo("Untitled Todo", "", fns.add(new Date(), {days : 1}));
+            newNote = model.openedBook.makeTodo("Untitled Todo", "", fns.add(new Date(), {days : 1}), "Normal");
         }
         model.getOpenedNoteFromID(newNote.id);
         model.getSelectedNoteFromID(newNote.id);
         return {newNote : newNote, selectedBook: model.openedBook};
     }
 
-    const handleSaveNote = function(newNoteName, newNoteContent, newTaskContentList, newDueDate){
-        model.openedNote.name = newNoteName;
-        model.openedNote.content = newNoteContent;
+    const handleSaveNote = function(saveData){
+        model.openedNote.name = saveData.name;
+        model.openedNote.content = saveData.content;
         if(model.openedNote.getType() == "todo"){
             const todo = model.openedNote;
             const tasks = todo.tasks;
-            console.log(`Task Lgt : ${tasks.length}`);
+            
             tasks.forEach((task) =>{
-                task.content = newTaskContentList[tasks.indexOf(task)];
+                task.content = saveData.taskContentList[tasks.indexOf(task)];
             });  
-            todo.dueDate = new Date(newDueDate);
+            todo.dueDate = new Date(saveData.dueDate);
             todo.setStatus();
+            todo.priority = saveData.priority;
             
         }
         view.loadBookNotes(model.openedBook);   
@@ -122,7 +124,7 @@ const controller = (function(){
     const handleTaskCheck = function(taskID, taskChecked){
         const todo = model.selectedNote;
         const task = todo.getTaskFromID(taskID);
-        console.log(task);
+        
         task.checked = taskChecked;
         todo.updateTasksStatus();
         return todo.getStatus();

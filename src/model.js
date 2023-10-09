@@ -125,7 +125,11 @@ const model = (function(){
         const noteIDX = note.parent.children.indexOf(note);
         const defaultNoteIDX = defaultNotes.children.indexOf(note);
         note.parent.children.splice(noteIDX, 1);
-        defaultNotes.children.splice(defaultNoteIDX);
+        if(note.getType() == "note") 
+            defaultNotes.children.splice(defaultNoteIDX);
+        else if (note.getType() == "todo"){
+            defaultTodos.children.splice(defaultNoteIDX);
+        }
     }
     
     const deleteBook = function(bookID){
@@ -165,105 +169,120 @@ const model = (function(){
         return note;
     }
 
-    const makeTodo = function(name, content = "", _dueDate, status = "Ongoing"){
-        
-        //Task Stuff
-        let refTaskID = -1;
 
+        const taskMix = function(){
+            //Task Stuff
+            let refTaskID = -1;
+            const makeTask = function(content){
+                ++refTaskID;
+                let _checked = false;
+                const task = {
+                    id: refTaskID,
+                    content,
+                    set checked(value){_checked = value},
+                    get checked(){return _checked},
+                }
+                this.tasks.push(task);
+                return task;
+            }
+            const getTaskFromID = function(id){
+                const taskIDX = this.tasks.findIndex((task) => task.id == id);
+                return this.tasks[taskIDX];
+            }
+            const removeTaskFromID = function(id){
+                const delTaskID = this.tasks.findIndex((task) => task.id == id);
+                this.tasks.splice(delTaskID, 1);
+            } 
+
+            return{
+                makeTask,
+                getTaskFromID,
+                removeTaskFromID,
+            }
+            //END 
+        }
+
+        
+
+        const statusMix = {
+            //Status Functions
+            setStatus(){
+                this.status = this.getStatus();
+            },
+            getStatus(){
+                
+                if(this.status != "Done"){
+                    let daysLeft = fns.differenceInCalendarDays(this.dueDate, new Date());
+                    let secLeft = fns.differenceInSeconds(this.dueDate, new Date());
+                    //console.log("Days Left : " + daysLeft);
+                  
+                    
+                    switch(true){
+                        case (daysLeft == 0) : 
+                            if(secLeft > 0)
+                                return "Today";
+                            else return "Overdue";
+                        break;
+                        case (daysLeft == 1) : return "Tomorrow"; break;
+                        case (daysLeft < 0) : return "Overdue"; break;
+                        default : return daysLeft + " days left"; break;
+
+                    }
+                }
+                else {
+                   
+                    return this.status;
+                }
+            },
+            getPreciseStatus(){
+                if(this.status != "Done"){
+                    let timeLeft = fns.differenceInSeconds(this.dueDate, new Date());
+                    
+                    switch(true){        
+                        case (timeLeft < 0) : return "Overdue"; break;
+                        default : return `${Math.floor(timeLeft/60)} minutes left`; break;
+                    }
+                }
+                else return this.status; 
+            },
+            updateTasksStatus(){
+                if(!this.tasks.find(task => (!task.checked))) this.status = "Done";
+                else {this.status = "Ongoing"; this.status = this.getStatus()};
+            },
+            switchStatus(){
+                if(this.status != "Done"){
+                    this.status = "Done";
+                    this.tasks.forEach(task => task.checked = true);
+                }
+                else {
+                    this.status = "Ongoing";
+                    this.status = this.getStatus();
+                    
+                    this.tasks.forEach(task => task.checked = false);
+                }
+                return this.status;
+            } 
+        //
+        }
+
+        const todoMethods = {...taskMix(), ...statusMix};
+
+    const makeTodo = function(name, content = "", _dueDate, _priority = "Normal", status = "Ongoing"){
+        
+        
         const tasks = [];
-        
-        const makeTask = function(content){
-            ++refTaskID;
-            let _checked = false;
-            const task = {
-                id: refTaskID,
-                content,
-                set checked(value){_checked = value},
-                get checked(){return _checked},
-            }
-            tasks.push(task);
-            return task;
-        }
-        const getTaskFromID = function(id){
-            const taskIDX = tasks.findIndex((task) => task.id == id);
-            return tasks[taskIDX];
-        }
-        const removeTaskFromID = function(id){
-            const delTaskID = tasks.findIndex((task) => task.id == id);
-            tasks.splice(delTaskID, 1);
-        } 
-        //END 
-
-        const setStatus = function(){
-            status = getStatus();
-        }
-        const getStatus = function(){
-            if(status != "Done"){
-                let daysLeft = fns.differenceInCalendarDays(_dueDate, new Date());
-                let secLeft = fns.differenceInSeconds(_dueDate, new Date());
-                //console.log("Days Left : " + daysLeft);
-                switch(true){
-                    case (daysLeft == 0) : 
-                        if(secLeft > 0)
-                            return "Today";
-                        else return "Overdue";
-                    break;
-                    case (daysLeft == 1) : return "Tomorrow"; break;
-                    case (daysLeft < 0) : return "Overdue"; break;
-                    default : return daysLeft + " days left"; break;
-
-                }
-            }
-            else return status;
-        }
-
-
-        const getPreciseStatus = function(){
-            if(status != "Done"){
-                let timeLeft = fns.differenceInSeconds(_dueDate, new Date());
-                
-                switch(true){        
-                    case (timeLeft < 0) : return "Overdue"; break;
-                    default : return `${Math.floor(timeLeft/60)} minutes left`; break;
-                }
-            }
-            else return status; 
-        }
-
-        const updateTasksStatus = function(){
-            if(!tasks.find(task => (!task.checked))) status = "Done";
-            else {status = "Ongoing"; status = getStatus()};
-        }
-
-        const switchStatus = function(){
-            if(status != "Done"){
-                status = "Done";
-                tasks.forEach(task => task.checked = true);
-            }
-            else {
-                status = "Ongoing";
-                status = this.getStatus();
-                
-                tasks.forEach(task => task.checked = false);
-            }
-            return status;
-        } 
-    
         const todo = {
             ...noteMix(name, content),
             set dueDate(newDate){_dueDate = newDate},
             get dueDate(){return _dueDate},
-            setStatus,
-            getStatus,
-            getPreciseStatus,
-            updateTasksStatus,
-            switchStatus,
+            set priority(newPriority){
+                _priority = newPriority;    
+            },
+            get priority(){return _priority},
             tasks,
-            makeTask,
-            getTaskFromID,
-            removeTaskFromID,
             getType : ()  => "todo",
         };
+        Object.setPrototypeOf(todo, todoMethods);
 
         this.add(todo);
         defaultTodos.children.push(todo);
