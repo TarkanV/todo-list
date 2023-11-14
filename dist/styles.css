@@ -562,16 +562,16 @@ body {
   opacity: 60%;
 }
 
-.editor.edit-todo .note-editor .editor-tools {
-  display: flex;
-  align-items: center;
-}
 .editor.edit-todo .note-editor .editor-tools .add-task {
   display: inline-block;
   border-radius: 100%;
   border: none;
   padding: 0;
   cursor: pointer;
+}
+.editor.edit-todo .note-editor .editor-tools .editor-close {
+  float: right;
+  margin-right: 0.7rem;
 }
 .editor.edit-todo .note-editor .todo-tools {
   display: flex;

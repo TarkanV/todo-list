@@ -634,14 +634,17 @@ body {
 	
 	.note-editor{
 		.editor-tools{
-			display: flex;
-			align-items: center;
+			
 			.add-task{
 				display: inline-block;
 				border-radius: 100%;
 				border : none;
 				padding: 0;
 				cursor: pointer;
+			}
+			.editor-close{
+				float : right;
+				margin-right: 0.7rem;
 			}
 			
 		}

@@ -16,6 +16,7 @@ const view = (function(){
     let selectedNoteNode;
     let openedNoteNode;
     const editorNode = document.querySelector(".editor");
+    const editorCloseNode = editorNode.querySelector(".editor-close");
     const editorStatus = document.querySelector(".editor-status > p");
     const editorTaskListNode =  editorNode.querySelector(".editor-task-list");
     let saveNoteDelay;
@@ -300,6 +301,13 @@ const view = (function(){
             }
         })
     }
+    const catchEditorClose = (function(){
+        editorCloseNode.addEventListener("click", (e) =>{
+            editorNode.classList.remove("visible");
+        });
+    
+    })();
+    
     const catchDeleteTask = function(handler){
         editorNode.addEventListener("click", (e) =>{
             if(e.target.closest(".editor-task-delete")){
