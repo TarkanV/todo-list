@@ -13,23 +13,21 @@
 <body>
   <div class="container">
     <div class="top">
-      <img class="logo phold" src="img/placeholder.png" />
+      <img class="logo phold" src="./img/logo.svg" />
       <h2 class="title">Todo App</h2>
-      <img class="dropdown-menu" src="img/placeholder.png" />
-      <input type="search" class="search-bar" id="search-bar" />
-      <div class="profile-pic">
-        <img class="ph-img" src="img/placeholder.png" />
-      </div>
+      
+      
+      
     </div>
 
     <div class="middle">
       <div class="hierarchy">
         <ul class="list">
-          <li class="all-memos main-folder folder">
+          <li class="all-memos main-folder folder" data-id="-1">
             <div class="folder-hoverer"></div>
             <span class="expand-icon"><img src="img/expand_down.svg"></span>
             <p class="folder-title">
-              <img class="ph-img" src="img/placeholder.png" />
+              
               <span class="folder-title-text">All Memos</span>
             </p>
             <div class="folder-more"><button class="show-folder-more"><img src="./img/more.svg"></button></div>
@@ -40,7 +38,7 @@
                 <p class="folder-title">
 
                   <span class="folder-click">
-                    <img class="ph-img" src="img/placeholder.png" />
+                    
                     <span class="folder-title-text">Notes</span>
                   </span>
 
@@ -53,18 +51,18 @@
                 <div class="folder-hoverer"></div>
                 <span class="expand-icon"><img src="img/expand_down.svg"></span>
                 <p class="folder-title">
-                  <img class="ph-img" src="img/placeholder.png" />
+                  
                   <span class="folder-title-text">Todo</span>
                 </p>
                 <div class="folder-more"><button class="show-folder-more"><img src="./img/more.svg"></button></div>
               </li>
             </ul>
           </li>
-          <li class="memobooks main-folder folder" data-id="0">
+          <li class="memobooks main-folder folder" data-id="M">
 
             <span class="expand-icon"><img src="img/expand_down.svg"></span>
             <p class="folder-title">
-              <img class="ph-img" src="img/placeholder.png" />
+              
               <span class="folder-title-text">Memobooks</span>
             </p>
             <div class="folder-hoverer"></div>
@@ -80,7 +78,7 @@
                   <div class="folder-hoverer"></div>
                   <span class="expand-icon"><img src="img/expand_down.svg"></span>
                   <span class="folder-title">
-                    <img class="ph-img" src="img/placeholder.png" />
+                    
                     <input class="folder-title-text" readonly>
                   </span>
                   <div class="folder-more">
@@ -100,16 +98,15 @@
       </div>
       <div class="opened-book">
         <div class="opened-book-title">
-          <img class="ph-img" src="img/placeholder.png" />
+          
           <h2>Note List</h2>
         </div>
         <div class="add-file">
           <button class="add-note">Add Note</button>
           <button class="add-todo">Add Todo</button>
-          <button class="file-more-button"><img src="./img/more.svg"></button>
-          <div class="file-more">
+          
             <button class="file-delete">Delete Note</button>
-          </div>
+          
         </div>
         <ul class="note-list">
 
@@ -145,7 +142,7 @@
                 </div>
                 <div class="note-status">
                   <div class="duedate">Today</div>
-                  <div class="priority">Normal</div>
+                  <div class="priority">Unset</div>
                 </div>
               </div>
               <div class="note-icon"></div>      
