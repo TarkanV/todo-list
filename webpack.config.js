@@ -10,7 +10,7 @@ module.exports = {
         filename: "main.bundle.js",
         path: path.resolve(__dirname, "dist"),    
     },
-    devtool: 'eval-source-map',
+    devtool: 'inline-source-map',
     devServer : {static: "./dist"},
     
 }

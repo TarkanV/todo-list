@@ -1,50 +1,19 @@
 
 import {model} from "./model.js";
 import {view} from "./view.js";
+import { storageModel } from "./storageModel.js";
 
 const fns = require("date-fns");
 
-//Test Books
-const myStack = model.defaultBook.makeBook("First Book");
-const myBook = model.defaultBook.makeBook("Book 1");
-myBook.makeNote("How to make a bomb", `- First take powder
-- Spread that shit on your face
-- Finish`,
-)
- 
-let book1 = model.defaultBook.makeBook("Book 2");
-book1.makeNote("The Enchanted Forest", "Amidst the whispering leaves, magical creatures roam.");
-book1.makeNote("Echoes of Eternity", "A tale of time travel and cosmic secrets.");
-book1.makeNote("Sapphire Skies", "A journey through dreamscapes and starlit realms.");
-book1.makeNote("Crimson Chronicles", "Blood, betrayal, and the rise of a fallen hero.");
-book1.makeNote("Whispers in the Wind", "Mysteries unfold with every breeze in a quaint village.");
-
-
-//Note Sample
-myBook.makeNote("Great Sailor", "The great sailor was a well known sailor who has conquered all the seas.");
-let todo = myBook.makeTodo("Fornite Time", "Play Order", 
-fns.add(new Date(), {days: 0, seconds: 15,}), "Normal");
-const redLight = myBook.makeTodo("Red Light Therapy", "The Good Stuff", 
-fns.add(new Date(), {days: 0, minutes: 10,}), "High");
-redLight.makeTask("Read Book");
-redLight.makeTask("Meditate");
-redLight.makeTask("Feel entitled");
-const toastTodo  = myBook.makeTodo("Workout Ting", "Program", fns.add(new Date(),{days : 2}), "Low");
-toastTodo.makeTask("100 push-ups");
-toastTodo.makeTask("100 sit-ups");
-myBook.makeNote("Chronicles of the Celestial Pirate", "A spacefaring rogue seeks treasure beyond the stars.");
-myBook.makeNote("The Alchemist's Daughter", "Potions, destiny, and the power of a hidden lineage.");
-myBook.makeNote("Eclipse of Empires", "Worlds collide as empires clash under an ancient prophecy.");
-myBook.makeNote("Songbird's Lament", "The music that awakens magic and changes destinies.");
-myBook.makeNote("Sands of Serendipity", "In the desert's embrace, a lost city reveals its secrets.");
-myBook.makeBook("The Third Book Of the Guy");
-
-//
-
-
-
-
+storageModel.loadDataToModel(model);
+const doto = model.getBookNoteFromID(0, 0);
+console.log(`${doto}`);
+console.log(`Date ${doto.modifiedDate}`);
 const controller = (function(){
+    const saveAll = function(){
+        storageModel.saveModelData(model.defaultBook);
+        
+    }
     const loadDefaultBook = function(book){
         model.setOpenedBook(book);
         
@@ -58,11 +27,22 @@ const controller = (function(){
         const parentBook = model.getBookFromID(bookID);
         const newBook = parentBook.makeBook("New Book");
         const newBookNode = view.loadBook(newBook, view.focusBookNode);
+
+        saveAll();
         view.enableEditBookName(newBookNode);        
+    }
+
+    const handleDeleteBook = function(bookID){
+        model.deleteBook(bookID);
+        saveAll();
     }
     const handleEditBookName = function(bookID, newBookName){
         const book = model.getBookFromID(bookID);
         book.setName(newBookName);
+        
+        saveAll();
+        if(book == model.openedBook)
+            view.loadBookNotes(model.openedBook);
     }
 
     const handleSelectedNote = function(noteID){    
@@ -79,10 +59,11 @@ const controller = (function(){
         if(noteType == "note")
             newNote = model.openedBook.makeNote("Untitled Note");
         else if(noteType == "todo"){
-            newNote = model.openedBook.makeTodo("Untitled Todo", "", fns.add(new Date(), {days : 1}), "Normal");
+            newNote = model.openedBook.makeTodo("Untitled Todo", "", "Normal", fns.add(new Date(), {days : 1}));
         }
         model.getOpenedNoteFromID(newNote.id);
         model.getSelectedNoteFromID(newNote.id);
+        saveAll();
         return {newNote : newNote, selectedBook: model.openedBook};
     }
 
@@ -102,17 +83,20 @@ const controller = (function(){
             
         }
         view.loadBookNotes(model.openedBook);   
+        saveAll();
     }
 
     const handleDeleteNote = function(noteID){
         model.deleteNote(noteID);
+        saveAll();
     }
 
     const handleTodoCheck = function(todoID){
         
         const todo = model.getSelectedNoteFromID(todoID);
         const status = todo.switchStatus();
-        
+
+        saveAll();
         return status;
     }
 
@@ -127,12 +111,13 @@ const controller = (function(){
         
         task.checked = taskChecked;
         todo.updateTasksStatus();
+        saveAll();
         return todo.getStatus();
     }
 
     const handleAddTask = function(){
         const todo = model.openedNote;
-        const task = todo.makeTask("New Task");
+        const task = todo.makeTask("New Task", false);
         todo.updateTasksStatus();
         todo.getStatus();
         return task;
@@ -147,7 +132,7 @@ const controller = (function(){
     const handleBookEvents = function(){
         view.setBookCollapsing();
         view.setOpenedBook(model.getOpenedBookFromID);
-        view.catchMoreBook(handleAddBook, model.deleteBook);
+        view.catchMoreBook(handleAddBook, handleDeleteBook);
         view.setEditBookName(handleEditBookName);  
     }
     const handleNoteEvents = function(){

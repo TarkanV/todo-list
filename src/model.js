@@ -66,7 +66,7 @@ const model = (function(){
 
     const defaultBook = {
         name : "Memobooks",
-        id: ++refBookID, 
+        id: "M", 
         children : [],
         ...fileOperator,
         makeBook,        
@@ -96,6 +96,7 @@ const model = (function(){
     let selectedNote;
 
     const getBookFromID = function(bookID){
+        
         return bookList.find(book => book.id == bookID);  
     }
     const getOpenedBookFromID = function(clickedBookID){
@@ -105,10 +106,11 @@ const model = (function(){
     };
     const getBookNoteFromID = function(bookID, noteID){
         const book = getBookFromID(bookID);
-        return book.children.find(note => note.id == noteID);
+        const targetNote = book.children.find(note => note.id == noteID);
+        return targetNote;
     }
     const getSelectedNoteFromID = function(selectedNoteID){
-        //console.log(`Opened Book : ${openedBook.name}`);    
+           
         selectedNote = getBookNoteFromID(openedBook.id, selectedNoteID);
         return selectedNote;
     }
@@ -125,6 +127,7 @@ const model = (function(){
         const noteIDX = note.parent.children.indexOf(note);
         const defaultNoteIDX = defaultNotes.children.indexOf(note);
         note.parent.children.splice(noteIDX, 1);
+        
         if(note.getType() == "note") 
             defaultNotes.children.splice(defaultNoteIDX);
         else if (note.getType() == "todo"){
@@ -134,6 +137,29 @@ const model = (function(){
     
     const deleteBook = function(bookID){
         const book =  getBookFromID(bookID);
+        for(let i = 0; i < book.children.length; i++){
+            const child = book.children[i];
+            if(child.getType() != "book"){
+                
+                
+                let allID;
+                if(child.getType()  == "note"){
+                    allID = defaultNotes.children.findIndex((childID) => childID == child.id);
+                    defaultNotes.children.splice(allID, 1);
+                }
+                else if(child.getType()  == "todo"){
+                    allID = defaultTodos.children.findIndex((childID) => childID == child.id);
+                    defaultTodos.children.splice(allID, 1);
+                }
+                
+                
+            }
+            else{
+                child.splice(book.children[i], 1);
+                deleteBook(child.id);
+            }
+        }
+
         const parentBook = book.parent;
         const childIDX = parentBook.children.indexOf(book);
         const listChildIDX = bookList.indexOf(book);
@@ -143,25 +169,25 @@ const model = (function(){
         
     };
 
-    const noteMix = function(name, content){
-        const creationDate = new Date();
-        const editNote = function(text){content = text};
+    const noteMix = function(name, content, modifiedDate){
+        
         return {
             name,
             id: ++refNoteID,
-            creationDate,
-            formattedCreationDate : {
-                date : creationDate.toLocaleDateString(), 
-                time : creationDate.toLocaleTimeString()
+            modifiedDate,
+            formattedModifiedDate : function() {
+                return{
+                    date : modifiedDate.toLocaleDateString(), 
+                    time : modifiedDate.toLocaleTimeString()
+                }
             },
             content,
-            editNote,
         }
     };
 
-    const makeNote = function(name, content = ""){ 
+    const makeNote = function(name, content = "", modifiedDate = new Date()){ 
         const note = {
-            ...noteMix(name, content),      
+            ...noteMix(name, content, modifiedDate),      
             getType : () => "note",
         }
         this.add(note);
@@ -173,9 +199,8 @@ const model = (function(){
         const taskMix = function(){
             //Task Stuff
             let refTaskID = -1;
-            const makeTask = function(content){
+            const makeTask = function(content, _checked = false){
                 ++refTaskID;
-                let _checked = false;
                 const task = {
                     id: refTaskID,
                     content,
@@ -204,77 +229,78 @@ const model = (function(){
 
         
 
-        const statusMix = {
-            //Status Functions
-            setStatus(){
-                this.status = this.getStatus();
-            },
-            getStatus(){
-                
-                if(this.status != "Done"){
-                    let daysLeft = fns.differenceInCalendarDays(this.dueDate, new Date());
-                    let secLeft = fns.differenceInSeconds(this.dueDate, new Date());
-                    //console.log("Days Left : " + daysLeft);
-                  
+        const statusMix = function(status) {
+            return {
+                //Status Functions
+                setStatus(){
+                    status = this.getStatus();
+                },
+                getStatus(){
                     
-                    switch(true){
-                        case (daysLeft == 0) : 
-                            if(secLeft > 0)
-                                return "Today";
-                            else return "Overdue";
-                        break;
-                        case (daysLeft == 1) : return "Tomorrow"; break;
-                        case (daysLeft < 0) : return "Overdue"; break;
-                        default : return daysLeft + " days left"; break;
+                    if(status != "Done"){
+                        let daysLeft = fns.differenceInCalendarDays(this.dueDate, new Date());
+                        let secLeft = fns.differenceInSeconds(this.dueDate, new Date());
+         
+                        switch(true){
+                            case (daysLeft == 0) : 
+                                if(secLeft > 0)
+                                    return "Today";
+                                else return "Overdue";
+                            break;
+                            case (daysLeft == 1) : return "Tomorrow"; break;
+                            case (daysLeft < 0) : return "Overdue"; break;
+                            default : return daysLeft + " days left"; break;
 
+                        }
                     }
-                }
-                else {
-                   
-                    return this.status;
-                }
-            },
-            getPreciseStatus(){
-                if(this.status != "Done"){
-                    let timeLeft = fns.differenceInSeconds(this.dueDate, new Date());
+                    else {
                     
-                    switch(true){        
-                        case (timeLeft < 0) : return "Overdue"; break;
-                        default : return `${Math.floor(timeLeft/60)} minutes left`; break;
+                        return status;
                     }
-                }
-                else return this.status; 
-            },
-            updateTasksStatus(){
-                if(!this.tasks.find(task => (!task.checked))) this.status = "Done";
-                else {this.status = "Ongoing"; this.status = this.getStatus()};
-            },
-            switchStatus(){
-                if(this.status != "Done"){
-                    this.status = "Done";
-                    this.tasks.forEach(task => task.checked = true);
-                }
-                else {
-                    this.status = "Ongoing";
-                    this.status = this.getStatus();
-                    
-                    this.tasks.forEach(task => task.checked = false);
-                }
-                return this.status;
-            } 
-        //
+                },
+                getPreciseStatus(){
+                    if(status != "Done"){
+                        let timeLeft = fns.differenceInSeconds(this.dueDate, new Date());
+                        
+                        switch(true){        
+                            case (timeLeft < 0) : return "Overdue"; break;
+                            default : return `${Math.floor(timeLeft/60)} minutes left`; break;
+                        }
+                    }
+                    else return status; 
+                },
+                updateTasksStatus(){
+                    if(!this.tasks.find(task => (!task.checked))) status = "Done";
+                    else {status = "Ongoing"; status = this.getStatus()};
+                },
+                switchStatus(){
+                    if(status != "Done"){
+                        status = "Done";
+                        this.tasks.forEach(task => task.checked = true);
+                    }
+                    else {
+                        status = "Ongoing";
+                        status = this.getStatus();
+                        
+                        this.tasks.forEach(task => task.checked = false);
+                    }
+                    return status;
+                } 
+            //
+            }
         }
+        const todoMethods = {...taskMix()};
 
-        const todoMethods = {...taskMix(), ...statusMix};
+    const makeTodo = function(name, content = "", _priority = "Normal", _dueDate, modifiedDate = new Date(), status = "Ongoing"){
+        
 
-    const makeTodo = function(name, content = "", _dueDate, _priority = "Normal", status = "Ongoing"){
-        
-        
         const tasks = [];
         const todo = {
-            ...noteMix(name, content),
+            ...noteMix(name, content, modifiedDate),
+            ...statusMix(status),
             set dueDate(newDate){_dueDate = newDate},
             get dueDate(){return _dueDate},
+            
             set priority(newPriority){
                 _priority = newPriority;    
             },
@@ -289,6 +315,8 @@ const model = (function(){
         return todo;
         
     } 
+
+    
     
     // end
 
@@ -315,5 +343,6 @@ const model = (function(){
     }
     
 })();
+
 
 export {model};

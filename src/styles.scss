@@ -46,11 +46,11 @@ body {
 	box-shadow: 0 2px 4px gray;
 
 	display: flex;
+	justify-content: center;
 	align-items: center;
 
 	.logo {
-		max-width: 40px;
-		max-height: 40px;
+		width: 2.5rem;
 	}
 
 	.title {
@@ -325,11 +325,22 @@ body {
 		position: relative;
 		display: flex;
 		padding-bottom: 0.5rem;
+		align-items: center;
+		gap: 4px;
+		.add-note, .add-todo{
+			
+			&.in-all-notes{
+				display : none;
+			}
+		}
 		button {
+			border-radius: 10%;
 			padding: 0.5rem;
 			font-size: 1rem;
 		}
 		.file-more-button {
+			@extend %button1;
+			height : 2.1rem;
 			img {
 				width: 1rem;
 			}
@@ -585,7 +596,7 @@ body {
 				resize: none;
 				width: 100%;
 				max-height: 100%;
-
+				background-color: hsl(215, 20%, 89%);
 				border: none;
 				outline: none;
 				font-size: 1rem;

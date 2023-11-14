@@ -40,11 +40,11 @@ body {
   background-color: hsl(215, 35%, 79%);
   box-shadow: 0 2px 4px gray;
   display: flex;
+  justify-content: center;
   align-items: center;
 }
 .top .logo {
-  max-width: 40px;
-  max-height: 40px;
+  width: 2.5rem;
 }
 .top .title {
   margin-left: 1rem;
@@ -284,10 +284,19 @@ body {
   position: relative;
   display: flex;
   padding-bottom: 0.5rem;
+  align-items: center;
+  gap: 4px;
+}
+.opened-book .add-file .add-note.in-all-notes, .opened-book .add-file .add-todo.in-all-notes {
+  display: none;
 }
 .opened-book .add-file button {
+  border-radius: 10%;
   padding: 0.5rem;
   font-size: 1rem;
+}
+.opened-book .add-file .file-more-button {
+  height: 2.1rem;
 }
 .opened-book .add-file .file-more-button img {
   width: 1rem;
@@ -522,6 +531,7 @@ body {
   resize: none;
   width: 100%;
   max-height: 100%;
+  background-color: hsl(215, 20%, 89%);
   border: none;
   outline: none;
   font-size: 1rem;
@@ -542,13 +552,13 @@ body {
   float: right;
 }
 
-.editor.edit-todo .note-editor .editor-task .editor-task-delete {
+.editor.edit-todo .note-editor .editor-task .editor-task-delete, .opened-book .add-file .file-more-button {
   background-color: inherit;
   border: none;
   padding: 0;
   cursor: pointer;
 }
-.editor.edit-todo .note-editor .editor-task .editor-task-delete:hover {
+.editor.edit-todo .note-editor .editor-task .editor-task-delete:hover, .opened-book .add-file .file-more-button:hover {
   opacity: 60%;
 }
 

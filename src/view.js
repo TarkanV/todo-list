@@ -1,3 +1,5 @@
+const fns = require("date-fns");
+
 const view = (function(){
     const templateBook = document.querySelector("#template-folder"); 
     const templateNote = document.querySelector("#template-note");
@@ -26,6 +28,7 @@ const view = (function(){
     const removeNodeChildren = function(node){
         while(node.firstElementChild) node.removeChild(node.firstElementChild);
     }
+    
 
     // Book methods
 
@@ -113,6 +116,7 @@ const view = (function(){
                         handler(bookID, newBookName);
                         textNode.setAttribute("readonly", true);
                         bookNode.classList.remove("title-edit");
+                
                     }
                 }
             }    
@@ -157,42 +161,59 @@ const view = (function(){
             
                 if(e.target.closest(".folder-hoverer")){
                         // If previous selected book exist, toggle it off
-                        
-                        if(selectedBookNode) selectedBookNode.classList.toggle("selected");
-                        selectedBookNode = e.target.closest(".folder");
-                        selectedBookNode.classList.toggle("selected");
+                        if(+e.target.closest(".folder").dataset.id != -1){
+                            if(selectedBookNode) selectedBookNode.classList.toggle("selected");
+                            selectedBookNode = e.target.closest(".folder");
+                            selectedBookNode.classList.toggle("selected");
 
-                        const selectedBookID = selectedBookNode.dataset.id;
-                        
+                            const selectedBookID = selectedBookNode.dataset.id;
+                            
 
-                        const selectedBook = handle(selectedBookID);
-                        
-                        loadBookNotes(selectedBook);
-                        openedBookNode.dataset.id = selectedBook.id;
-                    
+                            const selectedBook = handle(selectedBookID);
+                            
+                            loadBookNotes(selectedBook);
+                            openedBookNode.dataset.id = selectedBook.id;
+                        }
                 
             }
         })
     }
 
 
-    
+    const sortandLoadNotes = function(sort, book){
+        let bookChildren = [...book.children];
+        if(sort == "d"){
+            bookChildren = [...book.children].reverse();
+        }
+            bookChildren.forEach((child) => {
+            
+                if(child.getType() != "book"){
+                    const noteNode = (child.getType() == "note") ? loadNote(child) : loadTodo(child); 
+                    noteListNode.appendChild(noteNode);
+                }
+                
+            });   
+        
+    }  
+
+    const checkBookType = function(selectedBook){
+        const addNodes = [openedBookNode.querySelector(".add-note"), 
+                          openedBookNode.querySelector(".add-todo")];
+        if(isNaN(selectedBook.id)) 
+            addNodes.forEach((node) => node.classList.add("in-all-notes"));
+        else 
+            addNodes.forEach((node) => node.classList.remove("in-all-notes"));
+
+    }
     // Notes methods
     const loadBookNotes = function(selectedBook){
         //const bookNodeID = selectedBookNode.dataset.id; 
         
         removeNodeChildren(noteListNode);
-        
+        sortandLoadNotes("d", selectedBook);
+        checkBookType(selectedBook);
         openedBookNode.querySelector(".opened-book-title > h2").textContent = selectedBook.name;
-        
-        [...selectedBook.children].reverse().forEach((child) => {
-            
-            if(child.getType() != "book"){
-                const noteNode = (child.getType() == "note") ? loadNote(child) : loadTodo(child); 
-                noteListNode.appendChild(noteNode);
-            }
-            
-        });  
+
         openedBookNode.dataset.id = selectedBook.id;
     }
 
@@ -203,7 +224,7 @@ const view = (function(){
         const noteNode = templateNote.content.cloneNode(true).firstElementChild;
         noteNode.querySelector(".note-name").textContent = note.name;
         noteNode.querySelector(".note-content").textContent = note.content;
-        noteNode.querySelector(".note-date").textContent = note.formattedCreationDate.date;
+        noteNode.querySelector(".note-date").textContent = note.modifiedDate.toLocaleDateString();
         
         noteNode.dataset.id = note.id;
         
@@ -219,6 +240,7 @@ const view = (function(){
         
         const priorityNode = todoNode.querySelector(".note-status > .priority");
         priorityNode.textContent = todo.priority; 
+        console.log("Prior : " + todo.priority);
         const priorityClassName = todo.priority[0].toLowerCase() + todo.priority.slice(1);
         console.log(priorityClassName); 
         priorityNode.classList.add(priorityClassName);
@@ -255,13 +277,16 @@ const view = (function(){
         if(noteType == "todo"){
             editorNode.classList.add("edit-todo");
             editorNode.querySelector(".editor-duedate").value = note.dueDate.toISOString().slice(0,16);
-        
+            editorNode.querySelector(".editor-priority").value = note.priority;
+            console.log("Priorité :" + note.priority);
             loadEditTasks(note);         
         }
         else editorNode.classList.remove("edit-todo");
 
         editorNode.querySelector(".editor-note-name").value = note.name;
         editorNode.querySelector(".editor-text").textContent = note.content;
+        editorStatus.textContent = "Last Modified : " + note.modifiedDate.toLocaleDateString() + 
+        " at " +  fns.format(note.modifiedDate, "HH:mm");
         editorNode.dataset.id = note.id;
         editorNode.classList.add("visible");
         openedNoteNode = selectedNoteNode;
@@ -368,7 +393,6 @@ const view = (function(){
                 taskContentList : newTaskContentList,
                 dueDate : newDueDate,        
             }
-            
             noteSaver(saveData);
             editorStatus.textContent = "Note Saved!";
         
