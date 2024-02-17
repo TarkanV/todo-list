@@ -241,9 +241,9 @@ const view = (function(){
         
         const priorityNode = todoNode.querySelector(".note-status > .priority");
         priorityNode.textContent = todo.priority; 
-        console.log("Prior : " + todo.priority);
+       
         const priorityClassName = todo.priority[0].toLowerCase() + todo.priority.slice(1);
-        console.log(priorityClassName); 
+        
         priorityNode.classList.add(priorityClassName);
         
         if(todo.getStatus() == "Done"){
@@ -279,7 +279,7 @@ const view = (function(){
             editorNode.classList.add("edit-todo");
             editorNode.querySelector(".editor-duedate").value = note.dueDate.toISOString().slice(0,16);
             editorNode.querySelector(".editor-priority").value = note.priority;
-            console.log("Priorité :" + note.priority);
+            
             loadEditTasks(note);         
         }
         else editorNode.classList.remove("edit-todo");
@@ -420,7 +420,7 @@ const view = (function(){
             if(e.target.closest(".file-delete") && selectedNoteNode && !transition){
                 
             
-                console.log("Deleting Process");
+                
                 selectedNoteNode.classList.toggle("deleting");
                 transition = true;
                 selectedNoteNode.addEventListener("transitionend", (e) => {

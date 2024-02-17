@@ -54,7 +54,7 @@ const storageModel = (function(){
         }
     }
     const convertTodo = function(todo){
-        console.log("Modified : " + todo.name);
+       
         return{
             name: todo.name,
             modifiedDate : todo.modifiedDate.toISOString(),
@@ -115,7 +115,7 @@ const storageModel = (function(){
                 }
             break;
             case "note" :
-                console.log("load");
+                
                 
                 const note = modelBook.makeNote(item.name, item.content, 
                     fns.parseISO(item.modifiedDate));

@@ -7,8 +7,7 @@ const fns = require("date-fns");
 
 storageModel.loadDataToModel(model);
 const doto = model.getBookNoteFromID(0, 0);
-console.log(`${doto}`);
-console.log(`Date ${doto.modifiedDate}`);
+
 const controller = (function(){
     const saveAll = function(){
         storageModel.saveModelData(model.defaultBook);
