@@ -531,7 +531,8 @@ body {
   resize: none;
   width: 100%;
   max-height: 100%;
-  background-color: hsl(215, 20%, 89%);
+  min-height: 3rem;
+  background-color: hsl(215, 20%, 94%);
   border: none;
   outline: none;
   font-size: 1rem;
@@ -582,7 +583,8 @@ body {
   align-items: center;
 }
 .editor.edit-todo .note-editor .editor-text {
-  background-color: hsl(215, 10%, 86%);
+  background-color: hsl(215, 20%, 94%);
+  min-height: 3rem;
 }
 .editor.edit-todo .note-editor .editor-task {
   display: grid;
